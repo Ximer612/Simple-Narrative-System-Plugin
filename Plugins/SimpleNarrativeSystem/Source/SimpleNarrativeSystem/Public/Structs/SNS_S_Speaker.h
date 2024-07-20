@@ -1,0 +1,21 @@
+// Copyright 2024, Ximer - Marco Baldini, All rights reserved
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "SNS_S_Speaker.generated.h"
+
+/**
+ * 
+ */
+USTRUCT(Blueprintable)
+struct SIMPLENARRATIVESYSTEM_API FSNS_S_Speaker : public FTableRowBase
+{
+	GENERATED_USTRUCT_BODY()
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+    FText SpeakerDisplayedName;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+    FLinearColor SpeakerColor = {1.f,1.f,1.f,1.f};
+};
