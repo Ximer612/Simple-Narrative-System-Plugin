@@ -14,4 +14,10 @@ class SIMPLENARRATIVESYSTEM_API USNS_NarrativeBlueprintFuncLib : public UBluepri
 {
 	GENERATED_BODY()
 	
+public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (RowType = "SNS_S_Dialogue"))
+	FDataTableRowHandle DialogueRowHandle;
+
+	UFUNCTION(BlueprintCallable, meta=(RowType="SNS_S_Dialogue"))
+	static void EnqueueDialogue(const FName DialogueRowName, const UDataTable* DialoguesDataTable);
 };

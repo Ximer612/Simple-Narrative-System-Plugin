@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "Blueprint/UserWidget.h"
 #include "SNS_CustomProjectSettings.generated.h"
 
 /**
@@ -17,10 +18,13 @@ class SIMPLENARRATIVESYSTEM_API USNS_CustomProjectSettings : public UObject
 public:
 	USNS_CustomProjectSettings(const FObjectInitializer& ObjectInitializer);
 
-	UPROPERTY(Config, EditAnywhere, Category = "Speakers Settings", meta = (DisplayName = "Enable Simple Narrative System"))
+	UPROPERTY(Config, EditAnywhere, Category = "Settings", meta = (DisplayName = "Speakers' Data Table"))
 	TSoftObjectPtr<UDataTable> SpeakersDataTable;
 
-	UPROPERTY(Config, VisibleDefaultsOnly, Category = "Info", meta = (EditCondition = bEnableXPlugin, DisplayName = "Made by Ximer"))
+	UPROPERTY(Config, EditAnywhere, Category = "Settings", meta = (DisplayName = "Subtitles Widget"))
+	TSubclassOf<UUserWidget> DialogueWidgetBlueprint;
+
+	UPROPERTY(Config, VisibleDefaultsOnly, Category = "Info", meta = (DisplayName = "Made by"))
 	FString StringSetting;
 
 };
