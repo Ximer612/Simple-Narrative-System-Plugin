@@ -1,4 +1,4 @@
-#include "SNS_S_TimeStamp.h"
+#include "Structs/SNS_S_TimeStamp.h"
 
 
 FSNS_S_TimeStamp::FSNS_S_TimeStamp()

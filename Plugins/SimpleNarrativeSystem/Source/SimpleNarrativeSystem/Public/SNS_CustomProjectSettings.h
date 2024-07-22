@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
-#include "Blueprint/UserWidget.h"
 #include "SNS_CustomProjectSettings.generated.h"
 
 /**
@@ -22,7 +21,7 @@ public:
 	TSoftObjectPtr<UDataTable> SpeakersDataTable;
 
 	UPROPERTY(Config, EditAnywhere, Category = "Settings", meta = (DisplayName = "Subtitles Widget"))
-	TSubclassOf<UUserWidget> DialogueWidgetBlueprint;
+	TSubclassOf<class UUserWidget> DialogueWidgetBlueprint;
 
 	UPROPERTY(Config, VisibleDefaultsOnly, Category = "Info", meta = (DisplayName = "Made by"))
 	FString StringSetting;

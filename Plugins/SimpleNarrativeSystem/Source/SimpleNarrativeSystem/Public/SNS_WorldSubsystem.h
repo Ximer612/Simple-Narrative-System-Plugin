@@ -5,27 +5,28 @@
 #include "CoreMinimal.h"
 #include "Subsystems/WorldSubsystem.h"
 #include "Blueprint/UserWidget.h"
-#include "SNS_WidgetWorldSubsystem.generated.h"
+#include "Structs/SNS_S_Dialogue.h"
+#include "SNS_WorldSubsystem.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class SIMPLENARRATIVESYSTEM_API USNS_WidgetWorldSubsystem : public UTickableWorldSubsystem
+class SIMPLENARRATIVESYSTEM_API USNS_WorldSubsystem : public UTickableWorldSubsystem
 {
 	GENERATED_BODY()
 
 private:
 	int32 ZOrder = 612;
 
+	TObjectPtr<UUserWidget> SubtitlesUI;
+
 	float DialogueLineElapsedTime;
 	float DialogueLineRemaningTime;
 
-	TQueue<FName, EQueueMode::Mpsc> AudiosToPlay;
+	TQueue<const FSNS_S_Dialogue*, EQueueMode::Mpsc> DialoguesToPlay;
 
-	TSubclassOf<UUserWidget> SubtitlesWidgetTemplate;
-
-	TObjectPtr<UUserWidget> NarrativeSystemInstance;
+	TObjectPtr<AActor> WidgetManager;
 
 
 public:
@@ -38,4 +39,11 @@ public:
 	virtual void Tick(float DeltaTime);
 	virtual TStatId GetStatId() const;
 	// FTickableGameObject implementation End
+
+	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
+
+	void OnReceivedDialogue(const struct FSNS_S_Dialogue* InDialogue);
+
+private:
+	void CreateSubtitlesWidget(const UWorld& InWorld);
 };

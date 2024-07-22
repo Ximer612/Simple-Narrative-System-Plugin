@@ -18,6 +18,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (RowType = "SNS_S_Dialogue"))
 	FDataTableRowHandle DialogueRowHandle;
 
-	UFUNCTION(BlueprintCallable, meta=(RowType="SNS_S_Dialogue"))
-	static void EnqueueDialogue(const FName DialogueRowName, const UDataTable* DialoguesDataTable);
+	UFUNCTION(BlueprintCallable, meta=(RowType="SNS_S_Dialogue", WorldContext = "WorldContextObject"))
+	static void EnqueueDialogue(UObject* WorldContextObject, const FName DialogueRowName, const UDataTable* DialoguesDataTable);
 };
