@@ -4,26 +4,42 @@
 
 #include "SNS_NarrativeBlueprintFuncLib.h"
 #include "Structs/SNS_S_Dialogue.h"
-#include "SNS_WorldSubsystem.h"
+#include "SNS_DialogueWorldSubsystem.h"
+
+#include <K2Node.h>
 
 void USNS_NarrativeBlueprintFuncLib::EnqueueDialogue(UObject* WorldContextObject, const FName DialogueRowName, const UDataTable* DialoguesDataTable)
 {
+	if (DialogueRowName == "" || DialogueRowName == "None")
+	{
+		UE_LOG(LogTemp, Error, TEXT("Invalid subtitle row name!"));
+		return;
+	}
+
+	//checkf(DialogueRowName != "" || DialogueRowName != "None", TEXT("Dialogue row name cannot be empty!")); throw a blueprint error!
+
 	UWorld* CurrentWorld;
 
 	GET_WORLD_FROM_CONTEXT(CurrentWorld, WorldContextObject);
 
 	FSNS_S_Dialogue* Dialogue = DialoguesDataTable->FindRow<FSNS_S_Dialogue>(DialogueRowName, "", true);
 
-	UE_LOG(LogTemp, Error, TEXT("Dialogue = %s"), *((Dialogue->TimeStamps[0].SubtitleText).ToString()));
+	if (CurrentWorld)
+	{
+		USNS_DialogueWorldSubsystem* NarrativeSubSystem = CurrentWorld->GetSubsystem<USNS_DialogueWorldSubsystem>();
+		NarrativeSubSystem->EnqueueDialogue(Dialogue);
+	}
+}
+
+void USNS_NarrativeBlueprintFuncLib::TestAudio(UObject* WorldContextObject, USoundBase* NewSound)
+{
+	UWorld* CurrentWorld;
+
+	GET_WORLD_FROM_CONTEXT(CurrentWorld, WorldContextObject);
 
 	if (CurrentWorld)
 	{
-		USNS_WorldSubsystem* NarrativeSubSystem = CurrentWorld->GetSubsystem<USNS_WorldSubsystem>();
-		NarrativeSubSystem->OnReceivedDialogue(Dialogue);
-		//Dialogue = *NarrativeSubSystem->NarrativeSystem->EnqueueAudio(AudioRowName);
+		USNS_DialogueWorldSubsystem* NarrativeSubSystem = CurrentWorld->GetSubsystem<USNS_DialogueWorldSubsystem>();
+		NarrativeSubSystem->TestAudio(NewSound);
 	}
-
-
-
-
 }

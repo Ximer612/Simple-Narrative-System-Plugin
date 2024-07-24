@@ -6,28 +6,34 @@
 #include "Subsystems/WorldSubsystem.h"
 #include "Blueprint/UserWidget.h"
 #include "Structs/SNS_S_Dialogue.h"
-#include "SNS_WorldSubsystem.generated.h"
+#include "SNS_DialogueWorldSubsystem.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class SIMPLENARRATIVESYSTEM_API USNS_WorldSubsystem : public UTickableWorldSubsystem
+class SIMPLENARRATIVESYSTEM_API USNS_DialogueWorldSubsystem : public UTickableWorldSubsystem
 {
 	GENERATED_BODY()
 
 private:
 	int32 ZOrder = 612;
 
-	TObjectPtr<UUserWidget> SubtitlesUI;
+	bool bIsTickEnabled;
+	bool bIsPlayingAudio;
 
 	float DialogueLineElapsedTime;
 	float DialogueLineRemaningTime;
 
-	TQueue<const FSNS_S_Dialogue*, EQueueMode::Mpsc> DialoguesToPlay;
+	TStatId StatId;
+	
+	TObjectPtr<UUserWidget> SubtitlesUI;
+
+	TQueue<FSNS_S_Dialogue, EQueueMode::Mpsc> DialoguesToPlay;
 
 	TObjectPtr<AActor> WidgetManager;
 
+	TObjectPtr<UAudioComponent> AudioComponent;
 
 public:
 	// USubsystem implementation Begin
@@ -42,8 +48,13 @@ public:
 
 	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
 
-	void OnReceivedDialogue(const struct FSNS_S_Dialogue* InDialogue);
+	void EnqueueDialogue(const struct FSNS_S_Dialogue* InDialogue);
+
+	void TestAudio(USoundBase* NewSound);
 
 private:
 	void CreateSubtitlesWidget(const UWorld& InWorld);
+
+	void PlayDialogue(bool& AllLinesEnded);
+
 };
