@@ -28,12 +28,16 @@ private:
 	TStatId StatId;
 	
 	TObjectPtr<UUserWidget> SubtitlesUI;
+	class ISNS_I_Subtitles* SubtitlesUIInterface;
 
 	TQueue<FSNS_S_Dialogue, EQueueMode::Mpsc> DialoguesToPlay;
+	int32 CurrentDialogueLineIndex;
+	FSNS_S_Dialogue CurrentDialogue;
 
 	TObjectPtr<AActor> WidgetManager;
 
 	TObjectPtr<UAudioComponent> AudioComponent;
+
 
 public:
 	// USubsystem implementation Begin
@@ -50,11 +54,10 @@ public:
 
 	void EnqueueDialogue(const struct FSNS_S_Dialogue* InDialogue);
 
-	void TestAudio(USoundBase* NewSound);
-
 private:
 	void CreateSubtitlesWidget(const UWorld& InWorld);
-
+	void CreateAudioComponent(const UWorld& InWorld);
 	void PlayDialogue(bool& AllLinesEnded);
-
+	void ManageDialogueEnd();
+	void SendDialogue();
 };

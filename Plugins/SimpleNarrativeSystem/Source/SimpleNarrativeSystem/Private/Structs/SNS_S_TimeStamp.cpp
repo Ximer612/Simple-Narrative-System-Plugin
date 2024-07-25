@@ -11,6 +11,8 @@ FSNS_S_TimeStamp::FSNS_S_TimeStamp()
 
 	Speaker.DataTable = SpeakersDataTable.Get();
 
+	//copy last row name
+
 }
 
 FSNS_S_TimeStamp::~FSNS_S_TimeStamp()

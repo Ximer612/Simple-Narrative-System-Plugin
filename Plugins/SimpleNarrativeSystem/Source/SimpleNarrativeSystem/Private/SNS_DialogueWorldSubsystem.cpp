@@ -13,7 +13,7 @@ void USNS_DialogueWorldSubsystem::Initialize(FSubsystemCollectionBase& Collectio
 	UE_LOG(LogTemp, Warning, TEXT("Inizialize called on %s"), *GetWorld()->GetName());
 
 	bIsTickEnabled = false;
-
+	bIsPlayingAudio = false;
 }
 
 void USNS_DialogueWorldSubsystem::Deinitialize()
@@ -34,7 +34,27 @@ void USNS_DialogueWorldSubsystem::Tick(float DeltaTime)
 {
 	if (bIsTickEnabled)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Ticking!!!!"));
+		//UE_LOG(LogTemp, Warning, TEXT("Ticking!!!!"));
+
+		DialogueLineElapsedTime += DeltaTime;
+		DialogueLineRemaningTime -= DeltaTime;
+
+		//if remaning time is over
+		if (DialogueLineRemaningTime < 0)
+		{
+			//if there aren't other timestamps
+			if (CurrentDialogueLineIndex >= CurrentDialogue.TimeStamps.Num())
+			{
+				ManageDialogueEnd(); //better name/organization
+				return;
+			}
+
+			//SEND DIALOGUYE
+			SendDialogue();
+
+			CurrentDialogueLineIndex++;
+		}
+
 	}
 }
 
@@ -49,35 +69,16 @@ void USNS_DialogueWorldSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("CreateSubtitlesWidget in world on %s"), *InWorld.GetName());
 
-		//IF SUBTITLES ENABLES?
+		//IF SUBTITLES ENABLED?
 		CreateSubtitlesWidget(InWorld);
 
-		//INIT AUDIO COMPONENT
-		FAudioDevice::FCreateComponentParams Params = FAudioDevice::FCreateComponentParams(InWorld.GetAudioDeviceRaw());
-		AudioComponent = NewObject<UAudioComponent>((UClass*)Params.AudioComponentClass);
-
-		AudioComponent->bAutoActivate = false;
-		AudioComponent->AttenuationSettings = Params.AttenuationSettings;
-		AudioComponent->ConcurrencySet = Params.ConcurrencySet;
-
-		AudioComponent->SetVolumeMultiplier(1.f);
-		AudioComponent->SetPitchMultiplier(1.f);
-		AudioComponent->bAllowSpatialization = false;
-		AudioComponent->bIsUISound = true;
-		AudioComponent->bAutoDestroy = false;
-		AudioComponent->bIgnoreForFlushing = false; // true or false???
-		AudioComponent->bStopWhenOwnerDestroyed = false;
-
-		AudioComponent->RegisterComponentWithWorld(&InWorld);
+		//IF AUDIO ENABLED?
+		CreateAudioComponent(InWorld);
 	}
-
-
 }
 
 void USNS_DialogueWorldSubsystem::EnqueueDialogue(const FSNS_S_Dialogue* InDialogue)
 {
-	bIsPlayingAudio = !DialoguesToPlay.IsEmpty();
-
 	DialoguesToPlay.Enqueue(*InDialogue);
 
 	if (!bIsPlayingAudio)
@@ -88,24 +89,47 @@ void USNS_DialogueWorldSubsystem::EnqueueDialogue(const FSNS_S_Dialogue* InDialo
 	}
 }
 
-void USNS_DialogueWorldSubsystem::TestAudio(USoundBase* NewSound)
-{
-	AudioComponent->SetSound(NewSound);
-	AudioComponent->Play();
-}
-
 void USNS_DialogueWorldSubsystem::CreateSubtitlesWidget(const UWorld& InWorld)
 {
 	TSubclassOf<UUserWidget> DialogueWidgetBlueprint = GetDefault<USNS_CustomProjectSettings>()->DialogueWidgetBlueprint;
 
 	SubtitlesUI = CreateWidget(InWorld.GetFirstPlayerController(), DialogueWidgetBlueprint);
 
+	if (!SubtitlesUI->Implements<USNS_I_Subtitles>())
+	{
+		UE_LOG(LogTemp, Error, TEXT("SubtitlesUI dosen't implements Subtitles Interface!"));
+		return;
+	}
+	
+	SubtitlesUIInterface = Cast<ISNS_I_Subtitles>(SubtitlesUI);
+
 	if (SubtitlesUI)
 	{
 		SubtitlesUI->AddToViewport(ZOrder);
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("CreateWidget in world on %p"), SubtitlesUI);
+	UE_LOG(LogTemp, Log, TEXT("CreateWidget in world on %p"), SubtitlesUI);
+}
+
+void USNS_DialogueWorldSubsystem::CreateAudioComponent(const UWorld& InWorld)
+{
+	//INIT AUDIO COMPONENT
+	FAudioDevice::FCreateComponentParams Params = FAudioDevice::FCreateComponentParams(InWorld.GetAudioDeviceRaw());
+	AudioComponent = NewObject<UAudioComponent>((UClass*)Params.AudioComponentClass, "AudioComponent", RF_Standalone);
+
+	AudioComponent->bAutoActivate = false;
+	AudioComponent->AttenuationSettings = Params.AttenuationSettings;
+	AudioComponent->ConcurrencySet = Params.ConcurrencySet;
+
+	AudioComponent->SetVolumeMultiplier(1.f);
+	AudioComponent->SetPitchMultiplier(1.f);
+	AudioComponent->bAllowSpatialization = false;
+	AudioComponent->bIsUISound = true;
+	AudioComponent->bAutoDestroy = false;
+	AudioComponent->bIgnoreForFlushing = false; // true or false???
+	AudioComponent->bStopWhenOwnerDestroyed = false;
+
+	AudioComponent->RegisterComponentWithWorld(InWorld.GetWorld());
 }
 
 void USNS_DialogueWorldSubsystem::PlayDialogue(bool& AllLinesEnded)
@@ -116,27 +140,60 @@ void USNS_DialogueWorldSubsystem::PlayDialogue(bool& AllLinesEnded)
 		return;
 	}
 
+	AllLinesEnded = false;
+
 	DialogueLineElapsedTime = 0;
 
-	FSNS_S_Dialogue DialogueToPlay;
+	DialoguesToPlay.Dequeue(CurrentDialogue);
 
-	DialoguesToPlay.Dequeue(DialogueToPlay);
+	//TODO:check if it's only text
 
-	DialogueToPlay.AudioClip.LoadSynchronous();
-
-	AudioComponent->SetSound(DialogueToPlay.AudioClip.Get());
+	AudioComponent->SetSound(CurrentDialogue.AudioClip.LoadSynchronous());
 	AudioComponent->Play(0.f);
 
+	CurrentDialogueLineIndex = 0;
+
 	bIsTickEnabled = true;
+	bIsPlayingAudio = true;
+}
 
-	int test_index = 0;
-
-	if (SubtitlesUI->Implements<USNS_I_Subtitles>())
+void USNS_DialogueWorldSubsystem::ManageDialogueEnd()
+{
+	if (AudioComponent->Sound != nullptr)
 	{
-		ISNS_I_Subtitles* SubtitlesUIInterface = Cast<ISNS_I_Subtitles>(SubtitlesUI);
-
-		TSoftObjectPtr<UDataTable> SpeakersDataTable = GetDefault<USNS_CustomProjectSettings>()->SpeakersDataTable;
-		FSNS_S_Speaker* Speaker = SpeakersDataTable->FindRow<FSNS_S_Speaker>(DialogueToPlay.TimeStamps[test_index].Speaker.RowName, "", true);
-		SubtitlesUIInterface->Execute_OnReceivedDialogue(SubtitlesUI, *Speaker, DialogueToPlay.TimeStamps[test_index].SubtitleText);
+		AudioComponent->Stop();
 	}
+
+	bIsPlayingAudio = false;
+
+	//IF NO MORE DIALOGUES TO PLAY
+	if (DialoguesToPlay.IsEmpty())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("End dialogue!!!!"));
+		//CALL ON END ALL DIALOGUES
+	}
+	//IF THERE ARE OTHER DIALOGUES
+
+	bool AllDialoguesEnded;
+	PlayDialogue(AllDialoguesEnded);
+
+	//ON END ALL CURRENT DIALOGUES LINES (animation to remove subtitle)
+
+	bIsTickEnabled = !AllDialoguesEnded;
+}
+
+void USNS_DialogueWorldSubsystem::SendDialogue()
+{
+	TSoftObjectPtr<UDataTable> SpeakersDataTable = GetDefault<USNS_CustomProjectSettings>()->SpeakersDataTable;
+	FSNS_S_Speaker* Speaker = SpeakersDataTable->FindRow<FSNS_S_Speaker>(CurrentDialogue.TimeStamps[CurrentDialogueLineIndex].Speaker.RowName, "", true);
+
+	if (!Speaker)
+	{
+		UE_LOG(LogTemp, Error, TEXT("SPEAKER %s NOT FOUND!!!!"), *CurrentDialogue.TimeStamps[CurrentDialogueLineIndex].Speaker.RowName.ToString());
+		return;
+	}
+
+	DialogueLineRemaningTime += CurrentDialogue.TimeStamps[CurrentDialogueLineIndex].TimeStamp - DialogueLineElapsedTime;
+
+	SubtitlesUIInterface->Execute_OnReceivedDialogue(SubtitlesUI, *Speaker, CurrentDialogue.TimeStamps[CurrentDialogueLineIndex].SubtitleText);
 }

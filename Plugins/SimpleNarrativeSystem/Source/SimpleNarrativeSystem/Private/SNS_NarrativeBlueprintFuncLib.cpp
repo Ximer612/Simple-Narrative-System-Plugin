@@ -30,16 +30,3 @@ void USNS_NarrativeBlueprintFuncLib::EnqueueDialogue(UObject* WorldContextObject
 		NarrativeSubSystem->EnqueueDialogue(Dialogue);
 	}
 }
-
-void USNS_NarrativeBlueprintFuncLib::TestAudio(UObject* WorldContextObject, USoundBase* NewSound)
-{
-	UWorld* CurrentWorld;
-
-	GET_WORLD_FROM_CONTEXT(CurrentWorld, WorldContextObject);
-
-	if (CurrentWorld)
-	{
-		USNS_DialogueWorldSubsystem* NarrativeSubSystem = CurrentWorld->GetSubsystem<USNS_DialogueWorldSubsystem>();
-		NarrativeSubSystem->TestAudio(NewSound);
-	}
-}
