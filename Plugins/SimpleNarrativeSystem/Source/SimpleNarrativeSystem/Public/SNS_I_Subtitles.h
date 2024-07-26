@@ -25,4 +25,10 @@ class SIMPLENARRATIVESYSTEM_API ISNS_I_Subtitles
 public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnReceivedDialogue(const FSNS_S_Speaker& Speaker, const FText& Text);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnAllDialoguesEnd();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnCurrentDialogueEnd();
 };

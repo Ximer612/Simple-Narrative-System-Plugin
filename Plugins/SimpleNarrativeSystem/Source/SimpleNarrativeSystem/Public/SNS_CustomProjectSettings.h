@@ -2,8 +2,6 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
 #include "SNS_CustomProjectSettings.generated.h"
 
 /**
@@ -12,18 +10,24 @@
 UCLASS(config = SimpleNarrativeSystem, defaultconfig)
 class SIMPLENARRATIVESYSTEM_API USNS_CustomProjectSettings : public UObject
 {
-	GENERATED_BODY()
+	GENERATED_UCLASS_BODY()
 	
 public:
 	USNS_CustomProjectSettings(const FObjectInitializer& ObjectInitializer);
 
-	UPROPERTY(Config, EditAnywhere, Category = "Settings", meta = (DisplayName = "Speakers' Data Table"))
+	UPROPERTY(config, EditAnywhere, Category = "Settings", meta = (DisplayName = "Speakers' Data Table"))
 	TSoftObjectPtr<UDataTable> SpeakersDataTable;
 
-	UPROPERTY(Config, EditAnywhere, Category = "Settings", meta = (DisplayName = "Subtitles Widget"))
+	UPROPERTY(config, EditAnywhere, Category = "Settings", meta = (DisplayName = "Subtitles Widget"))
 	TSubclassOf<class UUserWidget> DialogueWidgetBlueprint;
 
-	UPROPERTY(Config, VisibleDefaultsOnly, Category = "Info", meta = (DisplayName = "Made by"))
+	UPROPERTY(config, VisibleDefaultsOnly, Category = "Info", meta = (DisplayName = "Made by"))
 	FString StringSetting;
 
 };
+
+#if UE_ENABLE_INCLUDE_ORDER_DEPRECATED_IN_5_2
+#include "CoreMinimal.h"
+#include "UObject/Object.h"
+#include "UObject/ObjectMacros.h"
+#endif

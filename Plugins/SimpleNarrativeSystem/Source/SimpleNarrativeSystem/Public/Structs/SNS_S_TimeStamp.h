@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include <SNS_CustomProjectSettings.h>
+#include "SNS_CustomProjectSettings.h"
 #include "SNS_S_TimeStamp.generated.h"
 
 /**
@@ -23,6 +23,5 @@ struct SIMPLENARRATIVESYSTEM_API FSNS_S_TimeStamp
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FText SubtitleText;
 
-	FSNS_S_TimeStamp();
-	~FSNS_S_TimeStamp();
+	FName LastSpeaker;
 };

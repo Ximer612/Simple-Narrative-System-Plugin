@@ -6,12 +6,11 @@
 #include "Structs/SNS_S_Dialogue.h"
 #include "SNS_DialogueWorldSubsystem.h"
 
-#include <K2Node.h>
-
 void USNS_NarrativeBlueprintFuncLib::EnqueueDialogue(UObject* WorldContextObject, const FName DialogueRowName, const UDataTable* DialoguesDataTable)
 {
 	if (DialogueRowName == "" || DialogueRowName == "None")
 	{
+		checkf(false, TEXT("Invalid subtitle row name!"));
 		UE_LOG(LogTemp, Error, TEXT("Invalid subtitle row name!"));
 		return;
 	}

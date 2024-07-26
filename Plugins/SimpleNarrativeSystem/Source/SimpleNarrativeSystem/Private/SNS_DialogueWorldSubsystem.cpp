@@ -21,12 +21,12 @@ void USNS_DialogueWorldSubsystem::Deinitialize()
 	Super::Deinitialize();
 	UE_LOG(LogTemp, Warning, TEXT("Deinitialize on %s"), *GetWorld()->GetName());
 
-
-	//if (SubtitlesUI)
-	//{
-	//	UE_LOG(LogTemp, Warning, TEXT("Destroy on %p"), SubtitlesUI);
-	//	SubtitlesUI->Destruct();
-	//}
+	if(SubtitlesUI)
+		SubtitlesUI->Destruct();
+	if(WidgetManager)
+		WidgetManager->Destroy();
+	if (AudioComponent)
+		AudioComponent->DestroyComponent();
 
 }
 
@@ -34,8 +34,6 @@ void USNS_DialogueWorldSubsystem::Tick(float DeltaTime)
 {
 	if (bIsTickEnabled)
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("Ticking!!!!"));
-
 		DialogueLineElapsedTime += DeltaTime;
 		DialogueLineRemaningTime -= DeltaTime;
 
@@ -49,9 +47,7 @@ void USNS_DialogueWorldSubsystem::Tick(float DeltaTime)
 				return;
 			}
 
-			//SEND DIALOGUYE
 			SendDialogue();
-
 			CurrentDialogueLineIndex++;
 		}
 
@@ -129,7 +125,10 @@ void USNS_DialogueWorldSubsystem::CreateAudioComponent(const UWorld& InWorld)
 	AudioComponent->bIgnoreForFlushing = false; // true or false???
 	AudioComponent->bStopWhenOwnerDestroyed = false;
 
-	AudioComponent->RegisterComponentWithWorld(InWorld.GetWorld());
+	if (ensure(InWorld.GetWorld()))
+	{
+		AudioComponent->RegisterComponentWithWorld(InWorld.GetWorld());
+	}
 }
 
 void USNS_DialogueWorldSubsystem::PlayDialogue(bool& AllLinesEnded)
@@ -146,10 +145,11 @@ void USNS_DialogueWorldSubsystem::PlayDialogue(bool& AllLinesEnded)
 
 	DialoguesToPlay.Dequeue(CurrentDialogue);
 
-	//TODO:check if it's only text
-
-	AudioComponent->SetSound(CurrentDialogue.AudioClip.LoadSynchronous());
-	AudioComponent->Play(0.f);
+	if (CurrentDialogue.AudioClip)
+	{
+		AudioComponent->SetSound(CurrentDialogue.AudioClip.LoadSynchronous());
+		AudioComponent->Play(0.f);
+	}
 
 	CurrentDialogueLineIndex = 0;
 
@@ -159,6 +159,7 @@ void USNS_DialogueWorldSubsystem::PlayDialogue(bool& AllLinesEnded)
 
 void USNS_DialogueWorldSubsystem::ManageDialogueEnd()
 {
+	//stops the audio if the last timestamp dosen't match with it's end
 	if (AudioComponent->Sound != nullptr)
 	{
 		AudioComponent->Stop();
@@ -166,20 +167,23 @@ void USNS_DialogueWorldSubsystem::ManageDialogueEnd()
 
 	bIsPlayingAudio = false;
 
-	//IF NO MORE DIALOGUES TO PLAY
+	//call ON END ALL CURRENT DIALOGUES LINES (animation to remove subtitle)
+	SubtitlesUIInterface->Execute_OnCurrentDialogueEnd(SubtitlesUI);
+
+	//if there aren't other dialogues in queue to play
 	if (DialoguesToPlay.IsEmpty())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("End dialogue!!!!"));
+		bIsTickEnabled = false;
 		//CALL ON END ALL DIALOGUES
+		SubtitlesUIInterface->Execute_OnAllDialoguesEnd(SubtitlesUI);
 	}
-	//IF THERE ARE OTHER DIALOGUES
-
-	bool AllDialoguesEnded;
-	PlayDialogue(AllDialoguesEnded);
-
-	//ON END ALL CURRENT DIALOGUES LINES (animation to remove subtitle)
-
-	bIsTickEnabled = !AllDialoguesEnded;
+	else
+	{
+		//play next queue dialogue
+		bool AllDialoguesEnded;
+		PlayDialogue(AllDialoguesEnded);
+		bIsTickEnabled = true;
+	}
 }
 
 void USNS_DialogueWorldSubsystem::SendDialogue()
