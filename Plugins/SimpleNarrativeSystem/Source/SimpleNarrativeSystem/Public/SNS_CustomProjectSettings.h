@@ -7,10 +7,11 @@
 /**
  * 
  */
+
 UCLASS(config = SimpleNarrativeSystem, defaultconfig)
 class SIMPLENARRATIVESYSTEM_API USNS_CustomProjectSettings : public UObject
 {
-	GENERATED_UCLASS_BODY()
+	GENERATED_BODY()
 	
 public:
 	USNS_CustomProjectSettings(const FObjectInitializer& ObjectInitializer);
