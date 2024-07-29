@@ -19,6 +19,7 @@ class SIMPLENARRATIVESYSTEM_API USNS_DialogueWorldSubsystem : public UTickableWo
 private:
 	int32 ZOrder = 612;
 
+	bool bNoSpeakerDataTable;
 	bool bIsTickEnabled;
 	bool bIsPlayingAudio;
 

@@ -34,16 +34,21 @@ void UnRegisterSettings()
 
 void FSimpleNarrativeSystemModule::StartupModule()
 {
-	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
-	// 
-
 	RegisterSettings();
 
-	//UPackage* NewPackage = CreatePackage(TEXT("/Game/Logo/Textures/LogoPackage"));
-	//FString FileName = FPackageName::LongPackageNameToFilename(NewPackage->GetPathName(), FPackageName::GetAssetPackageExtension());
-	//UDataTable SpeakersDataTable = NewObject<UDataTable>(nullptr,"SpeakerDT",EObjectFlags::RF_Public);
-	//UPackage::SavePackage(NewPackage, SpeakersDataTable, RF_Public | RF_Standalone, *FileName);
-	//FAssetRegistryModule::AssetCreated(nullptr);
+	//TSoftObjectPtr<UDataTable> SpeakersDataTable = GetDefault<USNS_CustomProjectSettings>()->SpeakersDataTable;
+
+	//if (SpeakersDataTable == nullptr)
+	//{
+	//	UE_LOG(LogTemp, Error, TEXT("Need to create speakers data table!"));
+	//	//UPackage* NewPackage = CreatePackage(TEXT("/Game/Logo/Textures/LogoPackage"));
+	//	//FString FileName = FPackageName::LongPackageNameToFilename(NewPackage->GetPathName(), FPackageName::GetAssetPackageExtension());
+	//	//UDataTable SpeakersDataTable = NewObject<UDataTable>(nullptr,"SpeakerDT",EObjectFlags::RF_Public);
+	//	//UPackage::SavePackage(NewPackage, SpeakersDataTable, RF_Public | RF_Standalone, *FileName);
+	//	//FAssetRegistryModule::AssetCreated(nullptr);
+	//}
+
+
 }
 
 

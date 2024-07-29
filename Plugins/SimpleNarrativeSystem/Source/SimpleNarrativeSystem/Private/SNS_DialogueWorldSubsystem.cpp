@@ -6,10 +6,13 @@
 #include "SNS_I_Subtitles.h"
 #include "AudioDevice.h"
 
+#include <Kismet/KismetSystemLibrary.h>
+
+#define LOCTEXT_NAMESPACE "SNS_NameSpace"
+
 void USNS_DialogueWorldSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
-	UE_LOG(LogTemp, Warning, TEXT("Inizialize called on %s"), *GetWorld()->GetName());
 
 	bIsTickEnabled = false;
 	bIsPlayingAudio = false;
@@ -18,7 +21,6 @@ void USNS_DialogueWorldSubsystem::Initialize(FSubsystemCollectionBase& Collectio
 void USNS_DialogueWorldSubsystem::Deinitialize()
 {
 	Super::Deinitialize();
-	UE_LOG(LogTemp, Warning, TEXT("Deinitialize on %s"), *GetWorld()->GetName());
 
 	if(SubtitlesUI)
 		SubtitlesUI->Destruct();
@@ -62,25 +64,38 @@ void USNS_DialogueWorldSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 {
 	if (InWorld.IsGameWorld())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("CreateSubtitlesWidget in world on %s"), *InWorld.GetName());
-
-		//IF SUBTITLES ENABLED?
-		CreateSubtitlesWidget(InWorld);
+		//IF SUBTITLES ENABLED
+		if (GetDefault<USNS_CustomProjectSettings>()->bSubtitlesEnabled)
+		{
+			CreateSubtitlesWidget(InWorld);
+		}
 
 		//IF AUDIO ENABLED?
 		CreateAudioComponent(InWorld);
+
+		if (GetDefault<USNS_CustomProjectSettings>()->SpeakersDataTable == nullptr)
+		{
+			FMessageLog("PIE").Error(LOCTEXT("NullSpeakersDataTable", "Please set a data table for speakers in the plugin's project settings!"));
+			bNoSpeakerDataTable = true;
+/*			TEnumAsByte<EQuitPreference::Type> type(0);
+			UKismetSystemLibrary::QuitGame(&InWorld, Cast<APlayerController>(InWorld.GetFirstLocalPlayerFromController()), type,true)*/;
+		}
 	}
 }
 
 void USNS_DialogueWorldSubsystem::EnqueueDialogue(const FSNS_S_Dialogue* InDialogue)
 {
+	if (bNoSpeakerDataTable)
+	{
+		return;
+	}
+
 	DialoguesToPlay.Enqueue(*InDialogue);
 
 	if (!bIsPlayingAudio)
 	{
 		bool AllLinesEnded;
-		PlayDialogue(AllLinesEnded);
-		
+		PlayDialogue(AllLinesEnded);		
 	}
 }
 
@@ -88,11 +103,17 @@ void USNS_DialogueWorldSubsystem::CreateSubtitlesWidget(const UWorld& InWorld)
 {
 	TSubclassOf<UUserWidget> DialogueWidgetBlueprint = GetDefault<USNS_CustomProjectSettings>()->DialogueWidgetBlueprint;
 
+	if (DialogueWidgetBlueprint == nullptr)
+	{
+		FMessageLog("PIE").Error(LOCTEXT("DialogueWidgetNull", "Please set a widget for subtitles or set 'subtitles enabled' to false in the plugin's project settings!"));
+		return;
+	}
+
 	SubtitlesUI = CreateWidget(InWorld.GetFirstPlayerController(), DialogueWidgetBlueprint);
 
 	if (!SubtitlesUI->Implements<USNS_I_Subtitles>())
 	{
-		UE_LOG(LogTemp, Error, TEXT("SubtitlesUI dosen't implements Subtitles Interface!"));
+		FMessageLog("PIE").Error(LOCTEXT("DialogueWidgetNoInterface", "Selected widget for subtitles dosen't implements SNS_I_Subtitles!"));
 		return;
 	}
 	
@@ -102,8 +123,6 @@ void USNS_DialogueWorldSubsystem::CreateSubtitlesWidget(const UWorld& InWorld)
 	{
 		SubtitlesUI->AddToViewport(ZOrder);
 	}
-
-	UE_LOG(LogTemp, Log, TEXT("CreateWidget in world on %p"), SubtitlesUI);
 }
 
 void USNS_DialogueWorldSubsystem::CreateAudioComponent(const UWorld& InWorld)
@@ -144,6 +163,8 @@ void USNS_DialogueWorldSubsystem::PlayDialogue(bool& AllLinesEnded)
 
 	DialoguesToPlay.Dequeue(CurrentDialogue);
 
+	CurrentDialogue.AudioClip.LoadSynchronous();
+
 	if (CurrentDialogue.AudioClip)
 	{
 		AudioComponent->SetSound(CurrentDialogue.AudioClip.LoadSynchronous());
@@ -166,15 +187,21 @@ void USNS_DialogueWorldSubsystem::ManageDialogueEnd()
 
 	bIsPlayingAudio = false;
 
-	//call ON END ALL CURRENT DIALOGUES LINES (animation to remove subtitle)
-	SubtitlesUIInterface->Execute_OnCurrentDialogueEnd(SubtitlesUI);
+	if (SubtitlesUI)
+	{
+		//call ON END ALL CURRENT DIALOGUES LINES (animation to remove subtitle)
+		SubtitlesUIInterface->Execute_OnCurrentDialogueEnd(SubtitlesUI);
+	}
 
 	//if there aren't other dialogues in queue to play
 	if (DialoguesToPlay.IsEmpty())
 	{
 		bIsTickEnabled = false;
 		//CALL ON END ALL DIALOGUES
-		SubtitlesUIInterface->Execute_OnAllDialoguesEnd(SubtitlesUI);
+		if (SubtitlesUI)
+		{
+			SubtitlesUIInterface->Execute_OnAllDialoguesEnd(SubtitlesUI);
+		}
 	}
 	else
 	{
@@ -192,11 +219,15 @@ void USNS_DialogueWorldSubsystem::SendDialogue()
 
 	if (!Speaker)
 	{
+		FMessageLog("LogSNS").Error(LOCTEXT("SpeakerNotFound", "A speaker was not found! (read console for more info)"));
 		UE_LOG(LogTemp, Error, TEXT("SPEAKER %s NOT FOUND!!!!"), *CurrentDialogue.TimeStamps[CurrentDialogueLineIndex].Speaker.RowName.ToString());
 		return;
 	}
 
 	DialogueLineRemaningTime += CurrentDialogue.TimeStamps[CurrentDialogueLineIndex].TimeStamp - DialogueLineElapsedTime;
 
-	SubtitlesUIInterface->Execute_OnReceivedDialogue(SubtitlesUI, *Speaker, CurrentDialogue.TimeStamps[CurrentDialogueLineIndex].SubtitleText);
+	if (SubtitlesUI)
+	{
+		SubtitlesUIInterface->Execute_OnReceivedDialogue(SubtitlesUI, *Speaker, CurrentDialogue.TimeStamps[CurrentDialogueLineIndex].SubtitleText);
+	}
 }

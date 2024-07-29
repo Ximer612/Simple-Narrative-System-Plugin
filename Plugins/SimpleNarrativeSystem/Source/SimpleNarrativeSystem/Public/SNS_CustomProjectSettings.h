@@ -21,6 +21,8 @@ public:
 
 	UPROPERTY(config, EditAnywhere, Category = "Settings", meta = (DisplayName = "Subtitles Widget"))
 	TSubclassOf<class UUserWidget> DialogueWidgetBlueprint;
+	UPROPERTY(config, EditAnywhere, Category = "Settings", meta = (DisplayName = "Subtitles enabled?"))
+	bool bSubtitlesEnabled;
 
 	UPROPERTY(config, VisibleDefaultsOnly, Category = "Info", meta = (DisplayName = "Made by"))
 	FString StringSetting;

@@ -6,16 +6,15 @@
 #include "Structs/SNS_S_Dialogue.h"
 #include "SNS_DialogueWorldSubsystem.h"
 
+#define LOCTEXT_NAMESPACE "SNS_NameSpace"
+
 void USNS_NarrativeBlueprintFuncLib::EnqueueDialogue(UObject* WorldContextObject, const FName DialogueRowName, const UDataTable* DialoguesDataTable)
 {
 	if (DialogueRowName == "" || DialogueRowName == "None")
 	{
-		checkf(false, TEXT("Invalid subtitle row name!"));
-		UE_LOG(LogTemp, Error, TEXT("Invalid subtitle row name!"));
+		FMessageLog("PIE").Error(LOCTEXT("InvalidRow", "Dialogue row name cannot be None/Null!"));
 		return;
 	}
-
-	//checkf(DialogueRowName != "" || DialogueRowName != "None", TEXT("Dialogue row name cannot be empty!")); throw a blueprint error!
 
 	UWorld* CurrentWorld;
 
