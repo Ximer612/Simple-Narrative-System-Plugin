@@ -31,4 +31,7 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnCurrentDialogueEnd();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnCurrentLineEnd();
 };

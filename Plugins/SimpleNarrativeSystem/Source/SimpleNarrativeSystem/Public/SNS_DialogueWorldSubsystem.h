@@ -17,8 +17,6 @@ class SIMPLENARRATIVESYSTEM_API USNS_DialogueWorldSubsystem : public UTickableWo
 	GENERATED_BODY()
 
 private:
-	int32 ZOrder = 612;
-
 	bool bNoSpeakerDataTable;
 	bool bIsTickEnabled;
 	bool bIsPlayingAudio;

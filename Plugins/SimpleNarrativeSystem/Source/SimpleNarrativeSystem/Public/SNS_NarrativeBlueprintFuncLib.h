@@ -20,4 +20,5 @@ public:
 	UFUNCTION(BlueprintCallable, meta = (RowType = "SNS_S_Dialogue", WorldContext = "WorldContextObject"))
 	static void EnqueueDialogue(UObject* WorldContextObject, const FName DialogueRowName, const UDataTable* DialoguesDataTable);
 
+	static void SetFont();
 };

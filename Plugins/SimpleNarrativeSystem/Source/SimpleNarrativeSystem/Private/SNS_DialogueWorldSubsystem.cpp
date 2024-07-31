@@ -6,9 +6,8 @@
 #include "SNS_I_Subtitles.h"
 #include "AudioDevice.h"
 
-#include <Kismet/KismetSystemLibrary.h>
-
 #define LOCTEXT_NAMESPACE "SNS_NameSpace"
+#define GET_SETTINGS GetDefault<USNS_CustomProjectSettings>()
 
 void USNS_DialogueWorldSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
@@ -41,10 +40,15 @@ void USNS_DialogueWorldSubsystem::Tick(float DeltaTime)
 		//if remaning time is over
 		if (DialogueLineRemaningTime < 0)
 		{
+
+			if (CurrentDialogueLineIndex != 0 && SubtitlesUI)
+			{
+				SubtitlesUIInterface->Execute_OnCurrentLineEnd(SubtitlesUI);
+			}
 			//if there aren't other timestamps
 			if (CurrentDialogueLineIndex >= CurrentDialogue.TimeStamps.Num())
 			{
-				ManageDialogueEnd(); //better name/organization
+				ManageDialogueEnd(); //check if ended all dialogues or just current
 				return;
 			}
 
@@ -65,7 +69,7 @@ void USNS_DialogueWorldSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 	if (InWorld.IsGameWorld())
 	{
 		//IF SUBTITLES ENABLED
-		if (GetDefault<USNS_CustomProjectSettings>()->bSubtitlesEnabled)
+		if (GET_SETTINGS->bSubtitlesEnabled)
 		{
 			CreateSubtitlesWidget(InWorld);
 		}
@@ -73,12 +77,10 @@ void USNS_DialogueWorldSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 		//IF AUDIO ENABLED?
 		CreateAudioComponent(InWorld);
 
-		if (GetDefault<USNS_CustomProjectSettings>()->SpeakersDataTable == nullptr)
+		if (GET_SETTINGS->SpeakersDataTable == nullptr)
 		{
 			FMessageLog("PIE").Error(LOCTEXT("NullSpeakersDataTable", "Please set a data table for speakers in the plugin's project settings!"));
 			bNoSpeakerDataTable = true;
-/*			TEnumAsByte<EQuitPreference::Type> type(0);
-			UKismetSystemLibrary::QuitGame(&InWorld, Cast<APlayerController>(InWorld.GetFirstLocalPlayerFromController()), type,true)*/;
 		}
 	}
 }
@@ -101,7 +103,7 @@ void USNS_DialogueWorldSubsystem::EnqueueDialogue(const FSNS_S_Dialogue* InDialo
 
 void USNS_DialogueWorldSubsystem::CreateSubtitlesWidget(const UWorld& InWorld)
 {
-	TSubclassOf<UUserWidget> DialogueWidgetBlueprint = GetDefault<USNS_CustomProjectSettings>()->DialogueWidgetBlueprint;
+	TSubclassOf<UUserWidget> DialogueWidgetBlueprint = GET_SETTINGS->DialogueWidgetBlueprint;
 
 	if (DialogueWidgetBlueprint == nullptr)
 	{
@@ -121,7 +123,7 @@ void USNS_DialogueWorldSubsystem::CreateSubtitlesWidget(const UWorld& InWorld)
 
 	if (SubtitlesUI)
 	{
-		SubtitlesUI->AddToViewport(ZOrder);
+		SubtitlesUI->AddToViewport(GET_SETTINGS->ZOrder);
 	}
 }
 
@@ -214,7 +216,7 @@ void USNS_DialogueWorldSubsystem::ManageDialogueEnd()
 
 void USNS_DialogueWorldSubsystem::SendDialogue()
 {
-	TSoftObjectPtr<UDataTable> SpeakersDataTable = GetDefault<USNS_CustomProjectSettings>()->SpeakersDataTable;
+	TSoftObjectPtr<UDataTable> SpeakersDataTable = GET_SETTINGS->SpeakersDataTable;
 	FSNS_S_Speaker* Speaker = SpeakersDataTable->FindRow<FSNS_S_Speaker>(CurrentDialogue.TimeStamps[CurrentDialogueLineIndex].Speaker.RowName, "", true);
 
 	if (!Speaker)

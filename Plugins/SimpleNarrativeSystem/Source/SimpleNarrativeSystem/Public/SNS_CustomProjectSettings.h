@@ -19,10 +19,12 @@ public:
 	UPROPERTY(config, EditAnywhere, Category = "Settings", meta = (DisplayName = "Speakers' Data Table"))
 	TSoftObjectPtr<UDataTable> SpeakersDataTable;
 
-	UPROPERTY(config, EditAnywhere, Category = "Settings", meta = (DisplayName = "Subtitles Widget"))
+	UPROPERTY(config, EditAnywhere, Category = "Widget Settings", meta = (DisplayName = "Subtitles Widget"))
 	TSubclassOf<class UUserWidget> DialogueWidgetBlueprint;
-	UPROPERTY(config, EditAnywhere, Category = "Settings", meta = (DisplayName = "Subtitles enabled?"))
+	UPROPERTY(config, EditAnywhere, Category = "Widget Settings", meta = (DisplayName = "Subtitles enabled?"))
 	bool bSubtitlesEnabled;
+	UPROPERTY(config, EditAnywhere, Category = "Widget Settings", meta = (DisplayName = "Z Order"))
+	int32 ZOrder;
 
 	UPROPERTY(config, VisibleDefaultsOnly, Category = "Info", meta = (DisplayName = "Made by"))
 	FString StringSetting;
