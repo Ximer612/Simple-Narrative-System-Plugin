@@ -24,4 +24,8 @@ struct SIMPLENARRATIVESYSTEM_API FSNS_S_TimeStamp
 	FText SubtitleText;
 
 	FName LastSpeaker;
+
+	FSNS_S_TimeStamp();
+	~FSNS_S_TimeStamp();
+
 };

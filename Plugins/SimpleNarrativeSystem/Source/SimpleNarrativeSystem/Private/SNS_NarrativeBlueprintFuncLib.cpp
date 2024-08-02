@@ -22,6 +22,12 @@ void USNS_NarrativeBlueprintFuncLib::EnqueueDialogue(UObject* WorldContextObject
 
 	FSNS_S_Dialogue* Dialogue = DialoguesDataTable->FindRow<FSNS_S_Dialogue>(DialogueRowName, "", true);
 
+	if (!Dialogue)
+	{
+		FMessageLog("PIE").Error(FText::Format(LOCTEXT("NotFoundRow", "Dialogue row name '{0}' cannot be found!"), FText::FromName(DialogueRowName)));
+		return;
+	}
+
 	if (CurrentWorld)
 	{
 		USNS_DialogueWorldSubsystem* NarrativeSubSystem = CurrentWorld->GetSubsystem<USNS_DialogueWorldSubsystem>();
