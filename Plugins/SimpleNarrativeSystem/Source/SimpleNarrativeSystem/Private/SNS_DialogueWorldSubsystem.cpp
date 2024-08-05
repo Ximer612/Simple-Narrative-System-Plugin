@@ -40,7 +40,7 @@ void USNS_DialogueWorldSubsystem::Tick(float DeltaTime)
 		//if remaning time is over
 		if (DialogueLineRemaningTime < 0)
 		{
-
+			//if it's not the first subtitle line
 			if (CurrentDialogueLineIndex != 0 && SubtitlesUI)
 			{
 				SubtitlesUIInterface->Execute_OnCurrentLineEnd(SubtitlesUI);
