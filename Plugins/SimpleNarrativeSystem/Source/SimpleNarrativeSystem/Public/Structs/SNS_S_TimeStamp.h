@@ -12,7 +12,7 @@
 USTRUCT(Blueprintable)
 struct SIMPLENARRATIVESYSTEM_API FSNS_S_TimeStamp
 {
-	GENERATED_USTRUCT_BODY()
+	GENERATED_BODY()
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (RowType = "SNS_S_Speaker"))
 	FDataTableRowHandle Speaker;

@@ -11,7 +11,7 @@
 USTRUCT(Blueprintable)
 struct SIMPLENARRATIVESYSTEM_API FSNS_S_Speaker : public FTableRowBase
 {
-	GENERATED_USTRUCT_BODY()
+	GENERATED_BODY()
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     FText SpeakerDisplayedName;

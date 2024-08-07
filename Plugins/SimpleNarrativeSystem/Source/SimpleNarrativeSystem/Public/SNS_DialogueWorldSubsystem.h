@@ -6,6 +6,7 @@
 #include "Subsystems/WorldSubsystem.h"
 #include "Blueprint/UserWidget.h"
 #include "Structs/SNS_S_Dialogue.h"
+#include "Structs/SNS_S_SettingsData.h"
 #include "SNS_DialogueWorldSubsystem.generated.h"
 
 /**
@@ -36,6 +37,8 @@ private:
 	TObjectPtr<AActor> WidgetManager;
 
 	TObjectPtr<UAudioComponent> AudioComponent;
+
+	struct FSNS_S_SettingsData* SettingsData;
 
 
 public:

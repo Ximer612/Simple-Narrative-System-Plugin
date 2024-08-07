@@ -5,8 +5,10 @@
 
 USNS_CustomProjectSettings::USNS_CustomProjectSettings(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 , SpeakersDataTable(nullptr)
+, DialogueWidgetBlueprint(nullptr)
+,bSubtitlesEnabled(true)
+, ZOrder(612)
 , StringSetting("Ximer - Marco Baldini - 2024")
-, DialogueWidgetBlueprint(nullptr), bSubtitlesEnabled(true), ZOrder(612)
 {
 	if (SpeakersDataTable)
 	{

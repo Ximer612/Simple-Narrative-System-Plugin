@@ -1,16 +1,16 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "SimpleNarrativeSystem.h"
-//#if WITH_EDITOR
+#if WITH_EDITOR
 #include "ISettingsModule.h"
-//#endif
+#endif
 #include "SNS_CustomProjectSettings.h"
 
 #define LOCTEXT_NAMESPACE "FSimpleNarrativeSystemModule"
 
 void RegisterSettings()
 {
-//#if WITH_EDITOR
+#if WITH_EDITOR
 	// register settings
 	ISettingsModule* SettingsModule = FModuleManager::GetModulePtr<ISettingsModule>("Settings");
 
@@ -22,17 +22,19 @@ void RegisterSettings()
 			GetMutableDefault<USNS_CustomProjectSettings>()
 		);
 	}
-//#endif
+#endif
 }
 
 void UnRegisterSettings()
 {
+#if WITH_EDITOR
 	// unregister settings
 	ISettingsModule* SettingsModule = FModuleManager::GetModulePtr<ISettingsModule>("Settings");
 	if (SettingsModule != nullptr)
 	{
 		SettingsModule->UnregisterSettings("Project", "Plugins", "SimpleNarrativeSystem");
 	}
+#endif
 }
 
 void FSimpleNarrativeSystemModule::StartupModule()
