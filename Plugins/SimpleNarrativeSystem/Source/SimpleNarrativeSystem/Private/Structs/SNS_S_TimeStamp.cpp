@@ -3,32 +3,31 @@
 
 FSNS_S_TimeStamp::FSNS_S_TimeStamp()
 {
-	if (Speaker.DataTable != nullptr)
-	{
-		return;
-	}
-
-	TSoftObjectPtr<UDataTable> SpeakersDataTable = GetDefault<USNS_CustomProjectSettings>()->SpeakersDataTable;
-
-	if (!SpeakersDataTable.IsValid())
-	{
-		SpeakersDataTable.LoadSynchronous();
-	}
-
-	Speaker.DataTable = SpeakersDataTable.Get();
-
-	//copy last row name
-
-	//if (Speaker.RowName != "" || Speaker.RowName != "None")
+	// TO DO WITH CUSTOM DATA TABLE CLASS
+	//if (Speaker.DataTable != nullptr)
 	//{
-	//	LastSpeaker = Speaker.RowName;
+	//	return;
 	//}
-	//else {
-	//	//Speaker.RowName = LastSpeaker;
-	//}
-
-	//UE_LOG(LogTemp, Warning, TEXT("My speaker is %s and last is %s"), *Speaker.RowName.ToString(), *LastSpeaker.ToString());
-
+//#if WITH_EDITOR
+//
+//	TSoftObjectPtr<UDataTable> SpeakersDataTable = GetDefault<USNS_CustomProjectSettings>()->SpeakersDataTable;
+//
+//	Speaker.DataTable = SpeakersDataTable.Get();
+//	Speaker.RowName = "None";
+//
+//	//copy last used row name
+//
+//	//if (Speaker.RowName != "" || Speaker.RowName != "None")
+//	//{
+//	//	LastSpeaker = Speaker.RowName;
+//	//}
+//	//else {
+//	//	//Speaker.RowName = LastSpeaker;
+//	//}
+//
+//	//UE_LOG(LogTemp, Warning, TEXT("My speaker is %s and last is %s"), *Speaker.RowName.ToString(), *LastSpeaker.ToString());
+//
+//#endif
 }
 
 FSNS_S_TimeStamp::~FSNS_S_TimeStamp()

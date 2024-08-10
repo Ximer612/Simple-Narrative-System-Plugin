@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
 #include "Structs/SNS_S_Speaker.h"
+#include "Structs/SNS_S_SettingsData.h"
 #include "SNS_I_Subtitles.generated.h"
 
 // This class does not need to be modified.
@@ -34,4 +35,7 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnCurrentLineEnd();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnLoadNewSettings(const struct FSNS_S_SettingsData& SettingsData);
 };

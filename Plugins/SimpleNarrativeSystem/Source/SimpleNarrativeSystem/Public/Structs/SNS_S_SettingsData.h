@@ -14,35 +14,35 @@ struct  SIMPLENARRATIVESYSTEM_API FSNS_S_SettingsData
 	GENERATED_BODY()
 
 	/* Should show subtitles? */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	bool bSubtitlesEnabled;
 
 	/* Should show who is speaking? */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	bool bSpeakerNameEnabled;
 
 	/* Text size */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	int32 SubtitlesSize;
 
 	/* Colors, outline, bold, italic */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	int32 SubtitlesType;
 
 	/* Alpha of widget background color */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	int32 SubtitlesBackgroundOpacity;
 
 	/* Color of widget background */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	int32 SubtitlesBackgroundColor;
 
 	/* Color of dialogue text */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	int32 SubtitlesTextColor;
 
 	/* Amount of dialogue and speaker text's outline */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	int32 SubtitlesTextOutlineAmount;
 
 	/* Amount of dialogue and speaker text's outline */

@@ -20,6 +20,5 @@
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
 		}
-	],
-	"EngineVersion" :  "5.3"
+	]
 }

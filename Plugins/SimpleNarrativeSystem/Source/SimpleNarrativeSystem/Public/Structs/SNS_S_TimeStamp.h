@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "SNS_CustomProjectSettings.h"
 #include "SNS_S_TimeStamp.generated.h"
 
 /**
@@ -14,7 +13,7 @@ struct SIMPLENARRATIVESYSTEM_API FSNS_S_TimeStamp
 {
 	GENERATED_BODY()
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (RowType = "SNS_S_Speaker"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (RowType = "/Script/SimpleNarrativeSystem.SNS_S_Speaker"))
 	FDataTableRowHandle Speaker;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -22,8 +21,6 @@ struct SIMPLENARRATIVESYSTEM_API FSNS_S_TimeStamp
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FText SubtitleText;
-
-	FName LastSpeaker;
 
 	FSNS_S_TimeStamp();
 	~FSNS_S_TimeStamp();
