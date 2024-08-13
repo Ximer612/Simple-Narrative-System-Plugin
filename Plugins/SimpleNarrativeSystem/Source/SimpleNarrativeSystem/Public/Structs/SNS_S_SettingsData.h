@@ -21,37 +21,25 @@ struct  SIMPLENARRATIVESYSTEM_API FSNS_S_SettingsData
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	bool bSpeakerNameEnabled;
 
-	/* Text size */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	int32 SubtitlesSize;
-
-	/* Colors, outline, bold, italic */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	int32 SubtitlesType;
+	// not working with rich text
+	///* Text size */
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	//float SubtitlesSize;
 
 	/* Alpha of widget background color */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	int32 SubtitlesBackgroundOpacity;
+	float SubtitlesBackgroundOpacity;
 
 	/* Color of widget background */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	int32 SubtitlesBackgroundColor;
+	FLinearColor SubtitlesBackgroundColor;
 
 	/* Color of dialogue text */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	int32 SubtitlesTextColor;
+	FLinearColor SubtitlesTextColor;
 
 	/* Amount of dialogue and speaker text's outline */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	int32 SubtitlesTextOutlineAmount;
+	float SubtitlesTextOutlineAmount;
 
-	/* Amount of dialogue and speaker text's outline */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TSoftObjectPtr<UDataTable> SpeakersDataTable;
-
-	UPROPERTY(config, EditDefaultsOnly, BlueprintReadOnly)
-	TSubclassOf<class UUserWidget> DialogueWidgetBlueprint;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	int32 ZOrder;
 };

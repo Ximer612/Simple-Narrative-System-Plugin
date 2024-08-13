@@ -13,6 +13,7 @@
 
 USNS_DialogueWorldSubsystem::USNS_DialogueWorldSubsystem()
 {
+	//TODO: FIX this can crash
 	static ConstructorHelpers::FClassFinder<UUserWidget> AssetFile(TEXT("/SimpleNarrativeSystem/UserInterface/WBP_Subtitles.WBP_Subtitles_C"));
 
 	if (AssetFile.Class != nullptr)
@@ -107,14 +108,14 @@ void USNS_DialogueWorldSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 		FSNS_S_SettingsData Data = SubtitlesWidget->SettingsData;
 
 #if WITH_EDITOR
-		if (SubtitlesWidget->SettingsData.SpeakersDataTable == nullptr)
+		if (SubtitlesWidget->SpeakersDataTable == nullptr)
 		{
 			FMessageLog("PIE").Error(LOCTEXT("NullSpeakersDataTable", "Please set a data table for speakers in the plugin's project settings!"));
 			bNoSpeakerDataTable = true;
 		}
 		else
 #endif
-		SubtitlesWidget->SettingsData.SpeakersDataTable.LoadSynchronous();
+		SubtitlesWidget->SpeakersDataTable.LoadSynchronous();
 	}
 }
 
@@ -266,7 +267,7 @@ void USNS_DialogueWorldSubsystem::ManageDialogueEnd()
 void USNS_DialogueWorldSubsystem::SendDialogue()
 {
 #if WITH_EDITOR
-	if (!SubtitlesWidget->SettingsData.SpeakersDataTable)
+	if (!SubtitlesWidget->SpeakersDataTable)
 	{
 		FMessageLog("PIE").Error(LOCTEXT("SpeakerDataTableNotFound", "Please set a Speaker data table into the proejct settings!"));
 		return;
@@ -274,7 +275,7 @@ void USNS_DialogueWorldSubsystem::SendDialogue()
 #endif
 	const FName& SpeakerRowName = CurrentDialogue.TimeStamps[CurrentDialogueLineIndex].Speaker.RowName;
 
-	FSNS_S_Speaker* Speaker = SubtitlesWidget->SettingsData.SpeakersDataTable->FindRow<FSNS_S_Speaker>(SpeakerRowName, "", true);
+	FSNS_S_Speaker* Speaker = SubtitlesWidget->SpeakersDataTable->FindRow<FSNS_S_Speaker>(SpeakerRowName, "", true);
 
 #if WITH_EDITOR
 	if (!Speaker)
