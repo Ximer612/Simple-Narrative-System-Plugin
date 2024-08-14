@@ -56,6 +56,7 @@ void USNS_DialogueWorldSubsystem::Tick(float DeltaTime)
 		//if remaning time is over
 		if (DialogueLineRemaningTime < 0)
 		{
+
 			//if it's not the first subtitle line
 			if (CurrentDialogueLineIndex != 0 && SubtitlesWidget)
 			{
@@ -84,8 +85,6 @@ void USNS_DialogueWorldSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 {
 	if (InWorld.IsGameWorld())
 	{
-		//IF SUBTITLES ENABLED
-
 		UGameInstance* GameInstance = InWorld.GetGameInstance();
 
 		if (!GameInstance)
@@ -104,8 +103,6 @@ void USNS_DialogueWorldSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 
 		//IF AUDIO ENABLED?
 		CreateAudioComponent(InWorld);
-
-		FSNS_S_SettingsData Data = SubtitlesWidget->SettingsData;
 
 #if WITH_EDITOR
 		if (SubtitlesWidget->SpeakersDataTable == nullptr)
@@ -291,6 +288,5 @@ void USNS_DialogueWorldSubsystem::SendDialogue()
 	if (SubtitlesWidget)
 	{
 		SubtitlesWidget->OnReceivedDialogue(*Speaker, CurrentDialogue.TimeStamps[CurrentDialogueLineIndex].SubtitleText);
-		//SubtitlesUIInterface->Execute_OnReceivedDialogue(SubtitlesUI, *Speaker, CurrentDialogue.TimeStamps[CurrentDialogueLineIndex].SubtitleText);
 	}
 }

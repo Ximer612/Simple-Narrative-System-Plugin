@@ -16,7 +16,7 @@ class SIMPLENARRATIVESYSTEM_API USNS_NarrativeBlueprintFuncLib : public UBluepri
 	
 public:
 
-	UFUNCTION(BlueprintCallable, meta = (RowType = "/Script/SimpleNarrativeSystem.SNS_S_Dialogue", WorldContext = "WorldContextObject"))
+	UFUNCTION(BlueprintCallable, meta = (DataTablePin ="/Script/SimpleNarrativeSystem.SNS_S_Dialogue", WorldContext = "WorldContextObject"))
 	static void EnqueueDialogue(UObject* WorldContextObject, const FName DialogueRowName, const UDataTable* DialoguesDataTable);
 
 	UFUNCTION(BlueprintCallable, meta = (WorldContext = "WorldContextObject"))

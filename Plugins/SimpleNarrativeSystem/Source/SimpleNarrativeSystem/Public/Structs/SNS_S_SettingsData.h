@@ -26,11 +26,7 @@ struct  SIMPLENARRATIVESYSTEM_API FSNS_S_SettingsData
 	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	//float SubtitlesSize;
 
-	/* Alpha of widget background color */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	float SubtitlesBackgroundOpacity;
-
-	/* Color of widget background */
+	/* Color of widget background with alpha */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	FLinearColor SubtitlesBackgroundColor;
 
@@ -38,8 +34,17 @@ struct  SIMPLENARRATIVESYSTEM_API FSNS_S_SettingsData
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	FLinearColor SubtitlesTextColor;
 
-	/* Amount of dialogue and speaker text's outline */
+	/* Should have a second/fade out text? */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	float SubtitlesTextOutlineAmount;
+	bool bSecondTextEnabled;
+
+	/* Should fade out texts? */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	bool bFadeOutEnabled;
+
+	// not working with rich text
+	/* Amount of dialogue and speaker text's outline */
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	//float SubtitlesTextOutlineAmount;
 
 };

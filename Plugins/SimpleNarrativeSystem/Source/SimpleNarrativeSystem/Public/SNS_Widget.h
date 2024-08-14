@@ -18,12 +18,14 @@ class SIMPLENARRATIVESYSTEM_API USNS_Widget : public UUserWidget
 
 private:
 	virtual bool Initialize() override;
-	
+
+
 public:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Config)
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Config)
 	struct FSNS_S_SettingsData SettingsData;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Config)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (RequiredAssetDataTags = "RowStructure=/Script/SimpleNarrativeSystem.SNS_S_Dialogue"))
 	TSoftObjectPtr<UDataTable> SpeakersDataTable;
 
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
