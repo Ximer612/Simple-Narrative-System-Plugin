@@ -10,6 +10,27 @@
 #include "SNS_Widget.h"
 #include "SNS_DialogueWorldSubsystem.generated.h"
 
+
+class FSNS_Dialogue
+{
+public:
+	FSNS_Dialogue(const FName InDialogueRowName, const UDataTable* InDialoguesDataTable) : DialogueRowName(InDialogueRowName), DialoguesDataTable(InDialoguesDataTable)
+	{
+
+	}
+
+	bool operator==(const FSNS_Dialogue& Other) const
+	{
+		return DialogueRowName == Other.DialogueRowName;
+	}
+
+private:
+	const FName DialogueRowName;
+	const UDataTable* DialoguesDataTable;
+
+	friend USNS_DialogueWorldSubsystem;
+};
+
 /**
  * 
  */
@@ -39,9 +60,11 @@ private:
 	TSubclassOf<USNS_Widget> SubtitlesWidgetClass; // static?
 	TObjectPtr<USNS_Widget> SubtitlesWidget;
 
-	TQueue<FSNS_S_Dialogue, EQueueMode::Mpsc> DialoguesToPlay;
 	int32 CurrentDialogueLineIndex;
-	FSNS_S_Dialogue CurrentDialogue;
+
+	FSNS_S_Dialogue* CurrentDialogue;
+
+	TArray<FSNS_Dialogue> DialoguesToPlay;
 
 	TObjectPtr<UAudioComponent> AudioComponent;
 
@@ -58,7 +81,7 @@ public:
 
 	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
 
-	void EnqueueDialogue(const struct FSNS_S_Dialogue* InDialogue);
+	void EnqueueDialogue(const FSNS_Dialogue&& InDialogue);
 
 
 private:
@@ -67,7 +90,6 @@ private:
 	void PlayDialogue(bool& AllLinesEnded);
 	void ManageDialogueEnd();
 	void SendDialogue();
-	//void LoadWidgetSettings(const FSNS_S_SettingsData& NewSettingsData);
 
 	friend USNS_NarrativeBlueprintFuncLib;
 };

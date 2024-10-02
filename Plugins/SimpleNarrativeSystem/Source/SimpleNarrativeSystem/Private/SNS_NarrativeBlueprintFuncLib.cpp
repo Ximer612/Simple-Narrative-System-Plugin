@@ -17,7 +17,7 @@ void USNS_NarrativeBlueprintFuncLib::EnqueueDialogue(UObject* WorldContextObject
 #if WITH_EDITOR
 	if (DialogueRowName == TEXT("") || DialogueRowName == TEXT("None"))
 	{
-		FMessageLog("PIE").Error(LOCTEXT("InvalidRow", "Dialogue row name cannot be None/Null!"));
+		FMessageLog("PIE").Error(LOCTEXT("InvalidRow", "Dialogue row name cannot be None or null!"));
 		return;
 	}
 #endif
@@ -26,20 +26,12 @@ void USNS_NarrativeBlueprintFuncLib::EnqueueDialogue(UObject* WorldContextObject
 
 	GET_WORLD_FROM_CONTEXT(CurrentWorld, WorldContextObject);
 
-	FSNS_S_Dialogue* Dialogue = DialoguesDataTable->FindRow<FSNS_S_Dialogue>(DialogueRowName, "", true);
-
-	if (!Dialogue)
-	{
-		FMessageLog("PIE").Error(FText::Format(LOCTEXT("NotFoundRow", "Dialogue row name '{0}' cannot be found!"), FText::FromName(DialogueRowName)));
-		return;
-	}
-
 	if (CurrentWorld)
 	{
 		USNS_DialogueWorldSubsystem* NarrativeSubSystem = CurrentWorld->GetSubsystem<USNS_DialogueWorldSubsystem>();
 		if (NarrativeSubSystem)
 		{
-			NarrativeSubSystem->EnqueueDialogue(Dialogue);
+			NarrativeSubSystem->EnqueueDialogue({ DialogueRowName ,DialoguesDataTable });
 		}
 	}
 }
