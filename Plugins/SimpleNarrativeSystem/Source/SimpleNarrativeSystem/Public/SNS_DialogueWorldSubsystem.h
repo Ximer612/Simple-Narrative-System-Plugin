@@ -53,6 +53,7 @@ private:
 	bool bNoSpeakerDataTable;
 	bool bIsTickEnabled;
 	bool bIsPlayingAudio;
+	bool bShouldAdjustAudioTiming;
 
 	float DialogueLineElapsedTime;
 	float DialogueLineRemaningTime;
@@ -90,6 +91,8 @@ private:
 	void PlayDialogue(bool& AllLinesEnded);
 	void ManageDialogueEnd();
 	void SendDialogue();
+
+	void SkipCurrentLine();
 
 	friend USNS_NarrativeBlueprintFuncLib;
 };

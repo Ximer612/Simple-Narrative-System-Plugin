@@ -53,6 +53,7 @@ void USNS_DialogueWorldSubsystem::Tick(float DeltaTime)
 		//if remaning time is over
 		if (DialogueLineRemaningTime < 0)
 		{
+			//AudioComponent->SetPaused(true);
 
 			//if it's not the first subtitle line
 			if (CurrentDialogueLineIndex != 0 && SubtitlesWidget)
@@ -66,8 +67,26 @@ void USNS_DialogueWorldSubsystem::Tick(float DeltaTime)
 				return;
 			}
 
+			//if (CurrentDialogueLineIndex == 0)
+			//{
+
 			SendDialogue();
+
+			int32 temp_line_index = CurrentDialogueLineIndex -1;
+
+			int32 soundCurrentTime = temp_line_index < 0 ? 0 : CurrentDialogue->TimeStamps[temp_line_index].TimeStamp;
+
+			if (bShouldAdjustAudioTiming && AudioComponent->Sound != nullptr && DialogueLineElapsedTime < soundCurrentTime)
+			{
+				AudioComponent->Play(soundCurrentTime);
+				bShouldAdjustAudioTiming = false;
+			}
+
+			DialogueLineElapsedTime = soundCurrentTime;
 			CurrentDialogueLineIndex++;
+
+			//}
+
 		}
 
 	}
@@ -199,6 +218,7 @@ void USNS_DialogueWorldSubsystem::ManageDialogueEnd()
 	if (AudioComponent->Sound != nullptr)
 	{
 		AudioComponent->Stop();
+		AudioComponent->Sound = nullptr;
 	}
 
 	bIsPlayingAudio = false;
@@ -249,4 +269,16 @@ void USNS_DialogueWorldSubsystem::SendDialogue()
 	{
 		SubtitlesWidget->OnReceivedDialogue(*Speaker, CurrentDialogue->TimeStamps[CurrentDialogueLineIndex].SubtitleText);
 	}
+}
+
+void USNS_DialogueWorldSubsystem::SkipCurrentLine()
+{
+	DialogueLineRemaningTime = 0;
+	bShouldAdjustAudioTiming = true;
+	
+
+	//SendDialogue();
+	//CurrentDialogueLineIndex++;
+
+	//AudioComponent->SetPaused(false);
 }

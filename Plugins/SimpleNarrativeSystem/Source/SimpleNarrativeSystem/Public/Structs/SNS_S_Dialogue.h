@@ -10,7 +10,7 @@
  * 
  */
  
-class USoundWave;
+class USoundBase;
  
 USTRUCT(Blueprintable)
 struct SIMPLENARRATIVESYSTEM_API FSNS_S_Dialogue : public FTableRowBase
@@ -18,7 +18,7 @@ struct SIMPLENARRATIVESYSTEM_API FSNS_S_Dialogue : public FTableRowBase
 	GENERATED_BODY()
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TSoftObjectPtr<USoundWave> AudioClip;
+	TSoftObjectPtr<USoundBase> AudioClip;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TArray<FSNS_S_TimeStamp> TimeStamps;
