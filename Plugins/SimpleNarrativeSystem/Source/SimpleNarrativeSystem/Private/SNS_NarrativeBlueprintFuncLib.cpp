@@ -11,7 +11,7 @@
 
 #define LOCTEXT_NAMESPACE "SNS_NameSpace"
 
-void USNS_NarrativeBlueprintFuncLib::EnqueueDialogue(UObject* WorldContextObject, const FName DialogueRowName, const UDataTable* DialoguesDataTable)
+void USNS_NarrativeBlueprintFuncLib::EnqueueDialogue(UObject* WorldContextObject, const FName DialogueRowName, const UDataTable* DialoguesDataTable, const bool bStopAllOtherDialogues)
 {
 
 #if WITH_EDITOR
@@ -31,7 +31,7 @@ void USNS_NarrativeBlueprintFuncLib::EnqueueDialogue(UObject* WorldContextObject
 		USNS_DialogueWorldSubsystem* NarrativeSubSystem = CurrentWorld->GetSubsystem<USNS_DialogueWorldSubsystem>();
 		if (NarrativeSubSystem)
 		{
-			NarrativeSubSystem->EnqueueDialogue({ DialogueRowName ,DialoguesDataTable });
+			NarrativeSubSystem->EnqueueDialogue({ DialogueRowName ,DialoguesDataTable}, bStopAllOtherDialogues);
 		}
 	}
 }

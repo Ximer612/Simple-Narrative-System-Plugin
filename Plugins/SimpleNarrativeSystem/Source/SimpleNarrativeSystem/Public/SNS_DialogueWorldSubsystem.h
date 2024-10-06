@@ -10,7 +10,6 @@
 #include "SNS_Widget.h"
 #include "SNS_DialogueWorldSubsystem.generated.h"
 
-
 class FSNS_Dialogue
 {
 public:
@@ -82,14 +81,13 @@ public:
 
 	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
 
-	void EnqueueDialogue(const FSNS_Dialogue&& InDialogue);
-
+	void EnqueueDialogue(const FSNS_Dialogue&& InDialogue, const bool bStopAllOtherDialogues);
 
 private:
 	void CreateSubtitlesWidget(const UWorld& InWorld);
 	void CreateAudioComponent(const UWorld& InWorld);
 	void PlayDialogue(bool& AllLinesEnded);
-	void ManageDialogueEnd();
+	void ManageDialogueEnd(bool bShouldRemoveFirst = true);
 	void SendDialogue();
 
 	void SkipCurrentLine();

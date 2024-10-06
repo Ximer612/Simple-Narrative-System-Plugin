@@ -53,8 +53,6 @@ void USNS_DialogueWorldSubsystem::Tick(float DeltaTime)
 		//if remaning time is over
 		if (DialogueLineRemaningTime < 0)
 		{
-			//AudioComponent->SetPaused(true);
-
 			//if it's not the first subtitle line
 			if (CurrentDialogueLineIndex != 0 && SubtitlesWidget)
 			{
@@ -67,29 +65,19 @@ void USNS_DialogueWorldSubsystem::Tick(float DeltaTime)
 				return;
 			}
 
-			//if (CurrentDialogueLineIndex == 0)
-			//{
-
-			SendDialogue();
-
-			int32 temp_line_index = CurrentDialogueLineIndex -1;
-
-			int32 soundCurrentTime = temp_line_index < 0 ? 0 : CurrentDialogue->TimeStamps[temp_line_index].TimeStamp;
-
-			if (bShouldAdjustAudioTiming && AudioComponent->Sound != nullptr && DialogueLineElapsedTime < soundCurrentTime)
+			if (bShouldAdjustAudioTiming && AudioComponent->Sound != nullptr && CurrentDialogueLineIndex > 0)
 			{
-				AudioComponent->Play(soundCurrentTime);
+				DialogueLineElapsedTime = CurrentDialogue->TimeStamps[CurrentDialogueLineIndex - 1].TimeStamp;
+				AudioComponent->Play(DialogueLineElapsedTime);
 				bShouldAdjustAudioTiming = false;
 			}
 
-			DialogueLineElapsedTime = soundCurrentTime;
+			SendDialogue();
+
 			CurrentDialogueLineIndex++;
-
-			//}
-
 		}
-
 	}
+
 }
 
 TStatId USNS_DialogueWorldSubsystem::GetStatId() const
@@ -125,14 +113,25 @@ void USNS_DialogueWorldSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 	}
 }
 
-void USNS_DialogueWorldSubsystem::EnqueueDialogue(const FSNS_Dialogue&& InDialogue)
+void USNS_DialogueWorldSubsystem::EnqueueDialogue(const FSNS_Dialogue&& InDialogue, const bool bStopAllOtherDialogues)
 {
 	if (bNoSpeakerDataTable || bIsDisabled || DialoguesToPlay.Contains(InDialogue))
 	{
 		return;
 	}
 
-	DialoguesToPlay.Add(InDialogue);
+	if (bStopAllOtherDialogues)
+	{
+		DialoguesToPlay.Empty();
+		DialoguesToPlay.Add(InDialogue);
+		ManageDialogueEnd(false);
+		//SubtitlesWidget->OnCurrentLineEnd();
+	}
+	else
+	{
+		DialoguesToPlay.Add(InDialogue);
+	}
+
 
 	if (!bIsPlayingAudio)
 	{
@@ -210,9 +209,12 @@ void USNS_DialogueWorldSubsystem::PlayDialogue(bool& AllLinesEnded)
 	bIsPlayingAudio = true;
 }
 
-void USNS_DialogueWorldSubsystem::ManageDialogueEnd()
+void USNS_DialogueWorldSubsystem::ManageDialogueEnd(bool bShouldRemoveFirst)
 {
-	DialoguesToPlay.RemoveAt(0);
+	if (bShouldRemoveFirst && !DialoguesToPlay.IsEmpty())
+	{
+		DialoguesToPlay.RemoveAt(0);
+	}
 
 	//stops the audio if the last timestamp dosen't match with it's end
 	if (AudioComponent->Sound != nullptr)
@@ -275,10 +277,4 @@ void USNS_DialogueWorldSubsystem::SkipCurrentLine()
 {
 	DialogueLineRemaningTime = 0;
 	bShouldAdjustAudioTiming = true;
-	
-
-	//SendDialogue();
-	//CurrentDialogueLineIndex++;
-
-	//AudioComponent->SetPaused(false);
 }
