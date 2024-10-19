@@ -73,12 +73,14 @@ DONE: Don't do the stack animation to the last dialogue
 DONE: Add rich text (maybe will be removed)
 DONE: You can't add two identical dialogues if they are already in queue/playing
 DONE: Button for skip current line working with audio
+DONE: Customizable text separator between speaker's name and text
+DONE: Dialogue that stops others (main story over NPC dialogue)
 
-TO-DO: Dialogue that stops others (main story over NPC dialogue)
 TO-DO: Increase dialogue stack-on-each-other dialogue number
 TO-DO: Add custom duration to fade-out
 TO-DO: Change font to every font easily (cannot be done with rich text)
 TO-DO: Change text size and border (cannot be done with rich text)
 TO-DO: Add rich text decorators for some fancy effects
 TO-DO: Audio and dialogue stops and continues with a button press
+TO-DO: Maybe remove rich text?
 ```

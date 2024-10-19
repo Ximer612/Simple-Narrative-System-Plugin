@@ -57,7 +57,7 @@ private:
 	float DialogueLineElapsedTime;
 	float DialogueLineRemaningTime;
 
-	TSubclassOf<USNS_Widget> SubtitlesWidgetClass; // static?
+	
 	TObjectPtr<USNS_Widget> SubtitlesWidget;
 
 	int32 CurrentDialogueLineIndex;

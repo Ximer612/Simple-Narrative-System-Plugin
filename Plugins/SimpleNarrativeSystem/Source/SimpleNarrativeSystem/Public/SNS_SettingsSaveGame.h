@@ -17,7 +17,7 @@ class USNS_SettingsSaveGame : public USaveGame
 
 public:
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	FSNS_S_SettingsData SettingsData;
 	
 };

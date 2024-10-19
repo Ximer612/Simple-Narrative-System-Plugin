@@ -3,20 +3,55 @@
 #include "SNS_DialogueWorldSubsystem.h"
 #include "SNS_I_Subtitles.h"
 #include "AudioDevice.h"
-
 #include "SNS_NarrativeBlueprintFuncLib.h"
-
 
 #define LOCTEXT_NAMESPACE "SNS_NameSpace"
 
 USNS_DialogueWorldSubsystem::USNS_DialogueWorldSubsystem()
 {
-	//TODO: Remove this hard coded reference
-	static ConstructorHelpers::FClassFinder<UUserWidget> AssetFile(TEXT("/SimpleNarrativeSystem/UserInterface/WBP_Subtitles.WBP_Subtitles_C"));
 
-	if (AssetFile.Class != nullptr)
+}
+
+void USNS_DialogueWorldSubsystem::OnWorldBeginPlay(UWorld& InWorld)
+{
+	if (InWorld.IsGameWorld())
 	{
-		SubtitlesWidgetClass = AssetFile.Class;
+		UGameInstance* GameInstance = InWorld.GetGameInstance();
+
+		if (!GameInstance)
+		{
+			return;
+		}
+
+		CreateSubtitlesWidget(InWorld);
+
+		//IF AUDIO ENABLED?
+		CreateAudioComponent(InWorld);
+
+#if WITH_EDITOR
+		if (SubtitlesWidget->SpeakersDataTable == nullptr)
+		{
+			FMessageLog("PIE").Error(LOCTEXT("NullSpeakersDataTable", "Please set a data table for speakers in the widget's properties!"));
+			bNoSpeakerDataTable = true;
+		}
+		else
+#endif
+			SubtitlesWidget->SpeakersDataTable.LoadSynchronous();
+	}
+}
+
+void USNS_DialogueWorldSubsystem::CreateSubtitlesWidget(const UWorld& InWorld)
+{
+	//TODO: find a way to remove this path
+	FStringClassReference MyWidgetClassRef(TEXT("/SimpleNarrativeSystem/UserInterface/WBP_Subtitles.WBP_Subtitles_C"));
+
+	TSubclassOf<USNS_Widget> SubtitlesWidgetClass = MyWidgetClassRef.TryLoadClass<USNS_Widget>();
+
+	if (SubtitlesWidgetClass)
+	{
+		SubtitlesWidget = Cast<USNS_Widget>(CreateWidget(InWorld.GetFirstPlayerController(), SubtitlesWidgetClass));
+		SubtitlesWidget->AddToViewport(612);
+		SubtitlesWidget->SpeakersDataTable.LoadSynchronous();
 	}
 }
 
@@ -85,33 +120,7 @@ TStatId USNS_DialogueWorldSubsystem::GetStatId() const
 	return StatId;
 }
 
-void USNS_DialogueWorldSubsystem::OnWorldBeginPlay(UWorld& InWorld)
-{
-	if (InWorld.IsGameWorld())
-	{
-		UGameInstance* GameInstance = InWorld.GetGameInstance();
 
-		if (!GameInstance)
-		{
-			return;
-		}
-
-		CreateSubtitlesWidget(InWorld);
-
-		//IF AUDIO ENABLED?
-		CreateAudioComponent(InWorld);
-
-#if WITH_EDITOR
-		if (SubtitlesWidget->SpeakersDataTable == nullptr)
-		{
-			FMessageLog("PIE").Error(LOCTEXT("NullSpeakersDataTable", "Please set a data table for speakers in the widget's properties!"));
-			bNoSpeakerDataTable = true;
-		}
-		else
-#endif
-		SubtitlesWidget->SpeakersDataTable.LoadSynchronous();
-	}
-}
 
 void USNS_DialogueWorldSubsystem::EnqueueDialogue(const FSNS_Dialogue&& InDialogue, const bool bStopAllOtherDialogues)
 {
@@ -124,7 +133,10 @@ void USNS_DialogueWorldSubsystem::EnqueueDialogue(const FSNS_Dialogue&& InDialog
 	{
 		DialoguesToPlay.Empty();
 		DialoguesToPlay.Add(InDialogue);
+		DialogueLineRemaningTime = 0;
 		ManageDialogueEnd(false);
+		SubtitlesWidget->StopAllOtherDialogues();
+		SendDialogue();
 		//SubtitlesWidget->OnCurrentLineEnd();
 	}
 	else
@@ -140,15 +152,7 @@ void USNS_DialogueWorldSubsystem::EnqueueDialogue(const FSNS_Dialogue&& InDialog
 	}
 }
 
-void USNS_DialogueWorldSubsystem::CreateSubtitlesWidget(const UWorld& InWorld)
-{
-	if (SubtitlesWidgetClass)
-	{
-		SubtitlesWidget = Cast<USNS_Widget>(CreateWidget(InWorld.GetFirstPlayerController(), SubtitlesWidgetClass));
-		SubtitlesWidget->AddToViewport(612);
-		SubtitlesWidget->SpeakersDataTable.LoadSynchronous();
-	}
-}
+
 
 void USNS_DialogueWorldSubsystem::CreateAudioComponent(const UWorld& InWorld)
 {

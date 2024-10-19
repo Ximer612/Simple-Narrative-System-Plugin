@@ -22,7 +22,7 @@ private:
 
 public:
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Config)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	struct FSNS_S_SettingsData SettingsData;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (RequiredAssetDataTags = "RowStructure=/Script/SimpleNarrativeSystem.SNS_S_Dialogue"))
@@ -43,6 +43,6 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void SetStyleFromSettings();
 
-	//UFUNCTION(BlueprintCallable)
-	//void OnLoadNewSettings(const struct FSNS_S_SettingsData& SettingsData);
+	UFUNCTION(BlueprintImplementableEvent)
+	void StopAllOtherDialogues();
 };

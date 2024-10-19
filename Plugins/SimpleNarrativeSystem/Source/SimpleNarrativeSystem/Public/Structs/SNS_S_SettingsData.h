@@ -9,17 +9,17 @@
  * 
  */
 USTRUCT(Blueprintable)
-struct  SIMPLENARRATIVESYSTEM_API FSNS_S_SettingsData
+struct SIMPLENARRATIVESYSTEM_API FSNS_S_SettingsData
 {
 	GENERATED_BODY()
 
 	/* Should show subtitles? */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	bool bSubtitlesEnabled;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool bSubtitlesEnabled = true;
 
 	/* Should show who is speaking? */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	bool bSpeakerNameEnabled;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool bSpeakerNameEnabled = true;
 
 	// not working with rich text
 	///* Text size */
@@ -27,24 +27,23 @@ struct  SIMPLENARRATIVESYSTEM_API FSNS_S_SettingsData
 	//float SubtitlesSize;
 
 	/* Color of widget background with alpha */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	FLinearColor SubtitlesBackgroundColor;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FLinearColor SubtitlesBackgroundColor = {1.f,1.f,1.f,1.f};
 
 	/* Color of dialogue text */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	FLinearColor SubtitlesTextColor;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FLinearColor SubtitlesTextColor = { 0.f,0.f,0.f,1.f };
 
 	/* Should have a second/fade out text? */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	bool bSecondTextEnabled;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool bSecondTextEnabled = true;
 
 	/* Should fade out texts? */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	bool bFadeOutEnabled;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool bFadeOutEnabled = true;
 
 	// not working with rich text
 	/* Amount of dialogue and speaker text's outline */
 	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	//float SubtitlesTextOutlineAmount;
-
 };
