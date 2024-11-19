@@ -75,6 +75,7 @@ DONE: You can't add two identical dialogues if they are already in queue/playing
 DONE: Button for skip current line working with audio
 DONE: Customizable text separator between speaker's name and text
 DONE: Dialogue that stops others (main story over NPC dialogue)
+DONE: Add custom effects for rich text with tags: <wave>, <rainbow>
 
 TO-DO: Increase dialogue stack-on-each-other dialogue number
 TO-DO: Add custom duration to fade-out
