@@ -20,6 +20,19 @@ struct SIMPLENARRATIVESYSTEM_API FSNS_S_Dialogue : public FTableRowBase
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSoftObjectPtr<USoundBase> AudioClip;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta = (RequiredAssetDataTags = "RowStructure=/Script/SimpleNarrativeSystem.SNS_S_Speaker"))
+	TObjectPtr<UDataTable> SpeakersDataTable;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TArray<FSNS_S_TimeStamp> TimeStamps;
+
+	/**
+	 * Can be overridden by subclasses; Called on every row when the owning data table is modified
+	 * Allows for custom fix-ups, parsing, etc for user changes
+	 * This will be called in addition to OnPostDataImport when importing
+	 *
+	 * @param InDataTable					The data table that owns this row
+	 * @param InRowName						The name of the row we're performing fix-up on
+	 */
+	virtual void OnDataTableChanged(const UDataTable* InDataTable, const FName InRowName) override;
 };

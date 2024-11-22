@@ -6,8 +6,10 @@
 #include "Structs/SNS_S_Dialogue.h"
 #include "SNS_DialogueWorldSubsystem.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/RichTextBlock.h"
 
 #include "SNS_I_Subtitles.h"
+#include <Fonts/FontMeasure.h>
 
 #define LOCTEXT_NAMESPACE "SNS_NameSpace"
 
@@ -50,5 +52,20 @@ void USNS_NarrativeBlueprintFuncLib::SkipCurrentDialogueLine(UObject* WorldConte
 			NarrativeSubSystem->SkipCurrentLine();
 		}
 	}
+
+}
+
+void USNS_NarrativeBlueprintFuncLib::GetRichTextInfo(const URichTextBlock* RichTextBlock, const FSlateFontInfo& InFontInfo, FVector2D& Measure)
+{
+	//RichTextBlock
+	const FText& Text = RichTextBlock->GetText();
+
+	const TSharedRef<FSlateFontMeasure> FontMeasureService = FSlateApplication::Get().GetRenderer()->GetFontMeasureService();
+
+	UE::Slate::FDeprecateVector2DResult Result = FontMeasureService->Measure(Text, InFontInfo);
+
+	Measure = Result;
+
+	UE_LOG(LogTemp, Warning, TEXT("Desired size = %f"), RichTextBlock->GetDesiredSize());
 
 }

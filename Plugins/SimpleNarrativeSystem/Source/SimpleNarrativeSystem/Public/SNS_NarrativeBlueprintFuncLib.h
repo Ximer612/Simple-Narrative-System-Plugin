@@ -17,9 +17,12 @@ class SIMPLENARRATIVESYSTEM_API USNS_NarrativeBlueprintFuncLib : public UBluepri
 	
 public:
 
-	UFUNCTION(BlueprintCallable, meta = (DataTablePin = "/Script/SimpleNarrativeSystem.SNS_S_Dialogue", WorldContext = "WorldContextObject"))
+	UFUNCTION(BlueprintCallable, meta = (DataTablePin = "DialoguesDataTable", WorldContext = "WorldContextObject"))
 	static void EnqueueDialogue(UObject* WorldContextObject, const FName DialogueRowName, const UDataTable* DialoguesDataTable, UPARAM(DisplayName = "StopAllOtherDialogues?") const bool bStopAllOtherDialogues);
 
 	UFUNCTION(BlueprintCallable, meta = (WorldContext = "WorldContextObject"))
 	static void SkipCurrentDialogueLine(UObject* WorldContextObject);
+
+	UFUNCTION(BlueprintCallable)
+	void GetRichTextInfo(const URichTextBlock* RichTextBlock, const FSlateFontInfo& InFontInfo, FVector2D& Measure);
 };

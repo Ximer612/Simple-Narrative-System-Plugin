@@ -16,10 +16,15 @@ struct SIMPLENARRATIVESYSTEM_API FSNS_S_TimeStamp
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (RowType = "/Script/SimpleNarrativeSystem.SNS_S_Speaker"))
 	FDataTableRowHandle Speaker;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	int32 SpeakerTopPadding = 0;
+
 	// default value for a single line dialogue TODO: every time you add a new entry in a data table increase this number by the previous
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float TimeStamp = 3.f; 
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FText SubtitleText;
+
+
 };

@@ -19,9 +19,15 @@
 			"Name": "SimpleNarrativeSystem",
 			"Type": "Runtime",
 			"LoadingPhase": "Default",
-			"PlatformAllowList":[
+			"PlatformAllowList": [
 				"Win64"
 			]
+		},
+		{
+			"Name": "SimpleNarrativeSystemEditor",
+			"Type": "Editor",
+			"LoadingPhase": "PostEngineInit"
 		}
+		
 	]
 }

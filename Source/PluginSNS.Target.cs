@@ -11,5 +11,14 @@ public class PluginSNSTarget : TargetRules
 		DefaultBuildSettings = BuildSettingsVersion.V4;
 		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_3;
 		ExtraModuleNames.Add("PluginSNS");
+		
+		if (bBuildEditor)
+        {
+            ExtraModuleNames.AddRange( 
+                new string[]
+                {
+                    "SimpleNarrativeSystemEditor"
+                });
+        }
 	}
 }
