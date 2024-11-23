@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "../SNS_DataTableRowHandle.h"
 #include "SNS_S_TimeStamp.generated.h"
 
 /**
@@ -14,10 +15,10 @@ struct SIMPLENARRATIVESYSTEM_API FSNS_S_TimeStamp
 	GENERATED_BODY()
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (RowType = "/Script/SimpleNarrativeSystem.SNS_S_Speaker"))
-	FDataTableRowHandle Speaker;
+	FSNS_DataTableRowHandle Speaker;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	int32 SpeakerTopPadding = 0;
+	float SpeakerTopPadding = 0;
 
 	// default value for a single line dialogue TODO: every time you add a new entry in a data table increase this number by the previous
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)

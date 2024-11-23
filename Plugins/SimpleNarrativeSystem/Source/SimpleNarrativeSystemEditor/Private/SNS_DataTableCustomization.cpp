@@ -1,7 +1,7 @@
 // Copyright 2024, Ximer - Marco Baldini, All rights reserved
 
 
-#include "MyObject.h"
+#include "SNS_DataTableCustomization.h"
 
 //#include "AssetRegistry/AssetData.h"
 //#include "Containers/Map.h"
@@ -10,7 +10,7 @@
 //#include "DetailWidgetRow.h"
 #include "Editor.h"
 //#include "Engine/DataTable.h"
-//#include "Fonts/SlateFontInfo.h"
+#include "Fonts/SlateFontInfo.h"
 //#include "Framework/Commands/UIAction.h"
 //#include "HAL/Platform.h"
 //#include "HAL/PlatformCrt.h"
@@ -53,38 +53,39 @@ void FSNS_DataTableCustomization::CustomizeHeader(TSharedRef<class IPropertyHand
 		UE_LOG(LogDataTable, Warning, TEXT("No Datatable meta tag present on property %s"), *InStructPropertyHandle->GetPropertyDisplayName().ToString());
 	}
 
-	//FPropertyComboBoxArgs ComboArgs(RowNamePropertyHandle,
-	//	FOnGetPropertyComboBoxStrings::CreateSP(this, &FSNS_DataTableCustomization::OnGetRowStrings),
-	//	FOnGetPropertyComboBoxValue::CreateSP(this, &FSNS_DataTableCustomization::OnGetRowValueString));
-	//ComboArgs.ShowSearchForItemCount = 1;
+	FPropertyComboBoxArgs ComboArgs(RowNamePropertyHandle,
+		FOnGetPropertyComboBoxStrings::CreateSP(this, &FSNS_DataTableCustomization::OnGetRowStrings),
+		FOnGetPropertyComboBoxValue::CreateSP(this, &FSNS_DataTableCustomization::OnGetRowValueString));
+
+	ComboArgs.ShowSearchForItemCount = 1;
 
 
-	//TSharedRef<SWidget> BrowseTableButton = PropertyCustomizationHelpers::MakeBrowseButton(
-	//	FSimpleDelegate::CreateSP(this, &FSNS_DataTableCustomization::BrowseTableButtonClicked),
-	//	LOCTEXT("SsBrowseToDatatable", "Browse to DataTable in Content Browser"));
-	//HeaderRow
-	//	.NameContent()
-	//	[
-	//		InStructPropertyHandle->CreatePropertyNameWidget()
-	//	]
-	//	.ValueContent()
-	//	.MaxDesiredWidth(0.0f) // don't constrain the combo button width
-	//	[
-	//		SNew(SHorizontalBox)
-	//			+ SHorizontalBox::Slot()
-	//			.FillWidth(1.0f)
-	//			[
-	//				PropertyCustomizationHelpers::MakePropertyComboBox(ComboArgs)
-	//			]
-	//			+ SHorizontalBox::Slot()
-	//			.Padding(2.0f)
-	//			.HAlign(HAlign_Center)
-	//			.VAlign(VAlign_Center)
-	//			.AutoWidth()
-	//			[
-	//				BrowseTableButton
-	//			]
-	//	]; ;
+	TSharedRef<SWidget> BrowseTableButton = PropertyCustomizationHelpers::MakeBrowseButton(
+		FSimpleDelegate::CreateSP(this, &FSNS_DataTableCustomization::BrowseTableButtonClicked),
+		LOCTEXT("SsBrowseToDatatable", "Browse to DataTable in Content Browser"));
+	HeaderRow
+		.NameContent()
+		[
+			InStructPropertyHandle->CreatePropertyNameWidget()
+		]
+		.ValueContent()
+		.MaxDesiredWidth(0.0f) // don't constrain the combo button width
+		[
+			SNew(SHorizontalBox)
+				+ SHorizontalBox::Slot()
+				.FillWidth(1.0f)
+				[
+					PropertyCustomizationHelpers::MakePropertyComboBox(ComboArgs)
+				]
+				+ SHorizontalBox::Slot()
+				.Padding(2.0f)
+				.HAlign(HAlign_Center)
+				.VAlign(VAlign_Center)
+				.AutoWidth()
+				[
+					BrowseTableButton
+				]
+		]; ;
 
 	FDataTableEditorUtils::AddSearchForReferencesContextMenu(HeaderRow, FExecuteAction::CreateSP(this, &FSNS_DataTableCustomization::OnSearchForReferences));
 }

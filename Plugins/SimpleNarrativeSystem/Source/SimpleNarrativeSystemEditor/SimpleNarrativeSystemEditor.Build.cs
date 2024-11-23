@@ -26,6 +26,8 @@ public class SimpleNarrativeSystemEditor : ModuleRules
             new string[]
             {
                 "Core",
+                "Slate",
+                "SlateCore",
                 "SimpleNarrativeSystem",
 				// ... add other public dependencies that you statically link with here ...
 			}
