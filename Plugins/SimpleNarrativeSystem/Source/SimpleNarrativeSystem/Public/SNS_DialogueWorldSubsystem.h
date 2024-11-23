@@ -56,11 +56,12 @@ private:
 
 	float DialogueLineElapsedTime;
 	float DialogueLineRemaningTime;
-
 	
 	TObjectPtr<USNS_Widget> SubtitlesWidget;
 
 	int32 CurrentDialogueLineIndex;
+
+	FName CurrentDialogueRowName;
 
 	FSNS_S_Dialogue* CurrentDialogue;
 

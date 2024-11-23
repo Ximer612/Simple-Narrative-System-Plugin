@@ -189,8 +189,8 @@ void USNS_DialogueWorldSubsystem::PlayDialogue(bool& AllLinesEnded)
 	AllLinesEnded = false;
 
 	DialogueLineElapsedTime = 0;
-
-	FSNS_S_Dialogue* TempDialogue = DialoguesToPlay[0].DialoguesDataTable->FindRow<FSNS_S_Dialogue>(DialoguesToPlay[0].DialogueRowName, "", false);
+	CurrentDialogueRowName = DialoguesToPlay[0].DialogueRowName;
+	FSNS_S_Dialogue* TempDialogue = DialoguesToPlay[0].DialoguesDataTable->FindRow<FSNS_S_Dialogue>(CurrentDialogueRowName, "", false);
 
 	if (!TempDialogue)
 	{
@@ -232,7 +232,7 @@ void USNS_DialogueWorldSubsystem::ManageDialogueEnd(bool bShouldRemoveFirst)
 	if (SubtitlesWidget)
 	{
 		//call ON END CURRENT DIALOGUE LINES (animation to remove subtitle)
-		SubtitlesWidget->OnCurrentDialogueEnd();
+		SubtitlesWidget->OnCurrentDialogueEndDelegate.Broadcast(CurrentDialogueRowName);
 	}
 
 	//if there aren't other dialogues in "queue" to play
@@ -242,7 +242,7 @@ void USNS_DialogueWorldSubsystem::ManageDialogueEnd(bool bShouldRemoveFirst)
 		//CALL ON END ALL DIALOGUES
 		if (SubtitlesWidget)
 		{
-			SubtitlesWidget->OnAllDialoguesEnd();
+			SubtitlesWidget->OnAllDialoguesEndDelegate.Broadcast();
 		}
 	}
 	else
@@ -273,7 +273,7 @@ void USNS_DialogueWorldSubsystem::SendDialogue()
 
 	if (SubtitlesWidget)
 	{
-		SubtitlesWidget->OnReceivedDialogue(*Speaker, CurrentDialogue->TimeStamps[CurrentDialogueLineIndex].SubtitleText);
+		SubtitlesWidget->OnReceivedDialogue(*Speaker, CurrentDialogue->TimeStamps[CurrentDialogueLineIndex]);
 	}
 }
 
