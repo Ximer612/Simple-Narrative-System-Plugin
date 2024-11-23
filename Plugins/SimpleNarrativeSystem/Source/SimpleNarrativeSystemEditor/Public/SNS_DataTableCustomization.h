@@ -2,18 +2,6 @@
 
 #pragma once
 
-#include "Containers/Array.h"
-#include "Containers/UnrealString.h"
-#include "IPropertyTypeCustomization.h"
-#include "Templates/SharedPointer.h"
-#include "UObject/NameTypes.h"
-
-class IPropertyHandle;
-class SToolTip;
-class UDataTable;
-class UScriptStruct;
-struct FAssetData;
-
 /**
  * 
  */

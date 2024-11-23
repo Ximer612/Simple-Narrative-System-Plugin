@@ -1,32 +1,10 @@
 // Copyright 2024, Ximer - Marco Baldini, All rights reserved
 
-
 #include "SNS_DataTableCustomization.h"
 
-//#include "AssetRegistry/AssetData.h"
-//#include "Containers/Map.h"
 #include "DataTableEditorUtils.h"
-//#include "Delegates/Delegate.h"
-//#include "DetailWidgetRow.h"
-#include "Editor.h"
-//#include "Engine/DataTable.h"
-#include "Fonts/SlateFontInfo.h"
-//#include "Framework/Commands/UIAction.h"
-//#include "HAL/Platform.h"
-//#include "HAL/PlatformCrt.h"
-//#include "Internationalization/Internationalization.h"
-//#include "Internationalization/Text.h"
-//#include "Misc/Attribute.h"
 #include "PropertyCustomizationHelpers.h"
 #include "PropertyEditorModule.h"
-#include "PropertyHandle.h"
-//#include "Templates/Casts.h"
-//#include "UObject/Class.h"
-//#include "UObject/Object.h"
-//#include "Widgets/DeclarativeSyntaxSupport.h"
-//#include "Widgets/Text/STextBlock.h"
-
-class SToolTip;
 
 #define LOCTEXT_NAMESPACE "FSNS_DataTableCustomization"
 
