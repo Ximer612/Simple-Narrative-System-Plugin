@@ -9,7 +9,6 @@
 #include "SNS_Widget.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDialogueEnd, FName, DialogueRowName);
-
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAllDialogueEnd);
 
 /**
@@ -26,11 +25,11 @@ private:
 
 public:
 
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite)
+	bool bCanSkipDialogue = true;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	struct FSNS_S_SettingsData SettingsData;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (RequiredAssetDataTags = "RowStructure=/Script/SimpleNarrativeSystem.SNS_S_Dialogue"))
-	TSoftObjectPtr<UDataTable> SpeakersDataTable;
 
 	UPROPERTY(BlueprintAssignable)
 	FOnDialogueEnd OnCurrentDialogueEndDelegate;
