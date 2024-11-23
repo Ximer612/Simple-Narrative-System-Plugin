@@ -27,16 +27,7 @@ void USNS_DialogueWorldSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 
 		//IF AUDIO ENABLED?
 		CreateAudioComponent(InWorld);
-
-#if WITH_EDITOR
-		if (SubtitlesWidget->SpeakersDataTable == nullptr)
-		{
-			FMessageLog("PIE").Error(LOCTEXT("NullSpeakersDataTable", "Please set a data table for speakers in the widget's properties!"));
-			bNoSpeakerDataTable = true;
-		}
-		else
-#endif
-			SubtitlesWidget->SpeakersDataTable.LoadSynchronous();
+		
 	}
 }
 
@@ -51,7 +42,8 @@ void USNS_DialogueWorldSubsystem::CreateSubtitlesWidget(const UWorld& InWorld)
 	{
 		SubtitlesWidget = Cast<USNS_Widget>(CreateWidget(InWorld.GetFirstPlayerController(), SubtitlesWidgetClass));
 		SubtitlesWidget->AddToViewport(612);
-		SubtitlesWidget->SpeakersDataTable.LoadSynchronous();
+		//SubtitlesWidget->SpeakersDataTable.LoadSynchronous();
+		//FMessageLog("PIE").Error(LOCTEXT("NullSpeakersDataTable", "Please set a data table for speakers in the widget's properties!"));
 	}
 }
 
@@ -131,13 +123,17 @@ void USNS_DialogueWorldSubsystem::EnqueueDialogue(const FSNS_Dialogue&& InDialog
 
 	if (bStopAllOtherDialogues)
 	{
+		for (int32 i = 0; i < DialoguesToPlay.Num() -1 ; i++)
+		{
+			SubtitlesWidget->OnCurrentDialogueEndDelegate.Broadcast(DialoguesToPlay[i].DialogueRowName);			
+		}
+
 		DialoguesToPlay.Empty();
 		DialoguesToPlay.Add(InDialogue);
 		DialogueLineRemaningTime = 0;
 		ManageDialogueEnd(false);
 		SubtitlesWidget->StopAllOtherDialogues();
 		SendDialogue();
-		//SubtitlesWidget->OnCurrentLineEnd();
 	}
 	else
 	{
@@ -258,7 +254,9 @@ void USNS_DialogueWorldSubsystem::SendDialogue()
 {
 	const FName& SpeakerRowName = CurrentDialogue->TimeStamps[CurrentDialogueLineIndex].Speaker.RowName;
 
-	FSNS_S_Speaker* Speaker = SubtitlesWidget->SpeakersDataTable->FindRow<FSNS_S_Speaker>(SpeakerRowName, "", true);
+	const UDataTable* SpeakersDataTable = CurrentDialogue->TimeStamps[CurrentDialogueLineIndex].Speaker.DataTable;
+	FSNS_S_Speaker* Speaker = SpeakersDataTable->FindRow<FSNS_S_Speaker>(SpeakerRowName, "", true);
+	//FSNS_S_Speaker* Speaker = SubtitlesWidget->SpeakersDataTable->FindRow<FSNS_S_Speaker>(SpeakerRowName, "", true);
 
 #if WITH_EDITOR
 	if (!Speaker)
@@ -279,6 +277,9 @@ void USNS_DialogueWorldSubsystem::SendDialogue()
 
 void USNS_DialogueWorldSubsystem::SkipCurrentLine()
 {
-	DialogueLineRemaningTime = 0;
-	bShouldAdjustAudioTiming = true;
+	if (SubtitlesWidget->bCanSkipDialogue)
+	{
+		DialogueLineRemaningTime = 0;
+		bShouldAdjustAudioTiming = true;
+	}
 }

@@ -41,33 +41,31 @@ class SIMPLENARRATIVESYSTEM_API USNS_DialogueWorldSubsystem : public UTickableWo
 	USNS_DialogueWorldSubsystem();
 
 	~USNS_DialogueWorldSubsystem();
-	
 
 private:
 
-	// FTickableGameObject StatId
+	//FTickableGameObject StatId
 	TStatId StatId;
+
+	TObjectPtr<USNS_Widget> SubtitlesWidget;
+	FSNS_S_Dialogue* CurrentDialogue;
+
+	TArray<FSNS_Dialogue> DialoguesToPlay;
+
+	TObjectPtr<UAudioComponent> AudioComponent;
+
+	FName CurrentDialogueRowName;
+
+	int32 CurrentDialogueLineIndex;
+
+	float DialogueLineElapsedTime;
+	float DialogueLineRemaningTime;
 
 	bool bIsDisabled;
 	bool bNoSpeakerDataTable;
 	bool bIsTickEnabled;
 	bool bIsPlayingAudio;
 	bool bShouldAdjustAudioTiming;
-
-	float DialogueLineElapsedTime;
-	float DialogueLineRemaningTime;
-	
-	TObjectPtr<USNS_Widget> SubtitlesWidget;
-
-	int32 CurrentDialogueLineIndex;
-
-	FName CurrentDialogueRowName;
-
-	FSNS_S_Dialogue* CurrentDialogue;
-
-	TArray<FSNS_Dialogue> DialoguesToPlay;
-
-	TObjectPtr<UAudioComponent> AudioComponent;
 
 public:
 	// USubsystem implementation Begin
