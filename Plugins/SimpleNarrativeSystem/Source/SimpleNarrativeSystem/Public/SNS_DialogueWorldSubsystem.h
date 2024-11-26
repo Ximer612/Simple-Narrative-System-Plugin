@@ -30,6 +30,10 @@ private:
 	friend USNS_DialogueWorldSubsystem;
 };
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnDialogueDelegate, FName);
+
+//DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAllDialogueEnd);
+
 /**
  * 
  */
@@ -68,6 +72,12 @@ private:
 	TArray<FSNS_Dialogue> DialoguesToPlay;
 
 	TObjectPtr<UAudioComponent> AudioComponent;
+
+	FOnDialogueDelegate OnCurrentDialogueEndDelegate;
+
+	FOnDialogueDelegate OnCurrentDialogueStartDelegate;
+
+	FOnDialogueDelegate OnAllDialoguesEndDelegate;
 
 public:
 	// USubsystem implementation Begin

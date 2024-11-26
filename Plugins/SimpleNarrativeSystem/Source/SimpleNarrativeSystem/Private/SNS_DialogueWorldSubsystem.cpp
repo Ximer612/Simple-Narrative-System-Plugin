@@ -76,6 +76,9 @@ void USNS_DialogueWorldSubsystem::Deinitialize()
 	if (AudioComponent)
 		AudioComponent->DestroyComponent();
 
+	OnCurrentDialogueEndDelegate.Clear();
+	OnCurrentDialogueStartDelegate.Clear();
+	OnAllDialoguesEndDelegate.Clear();
 }
 
 void USNS_DialogueWorldSubsystem::Tick(float DeltaTime)
@@ -199,18 +202,24 @@ void USNS_DialogueWorldSubsystem::PlayDialogue(bool& AllLinesEnded)
 	}
 
 	CurrentDialogue = TempDialogue;
-	CurrentDialogue->AudioClip.LoadSynchronous();
 
-	if (CurrentDialogue->AudioClip)
+	if (CurrentDialogue->AudioClip.IsValid())
 	{
-		AudioComponent->SetSound(CurrentDialogue->AudioClip.Get());
-		AudioComponent->Play(0.f);
+		CurrentDialogue->AudioClip.LoadSynchronous();
+
+		if (CurrentDialogue->AudioClip)
+		{
+			AudioComponent->SetSound(CurrentDialogue->AudioClip.Get());
+			AudioComponent->Play(0.f);
+		}
 	}
 
 	CurrentDialogueLineIndex = 0;
 
 	bIsTickEnabled = true;
 	bIsPlayingAudio = true;
+
+	OnCurrentDialogueStartDelegate.Broadcast(CurrentDialogueRowName);
 }
 
 void USNS_DialogueWorldSubsystem::ManageDialogueEnd(bool bShouldRemoveFirst)
@@ -232,8 +241,10 @@ void USNS_DialogueWorldSubsystem::ManageDialogueEnd(bool bShouldRemoveFirst)
 	if (SubtitlesWidget)
 	{
 		//call ON END CURRENT DIALOGUE LINES (animation to remove subtitle)
-		SubtitlesWidget->OnCurrentDialogueEndDelegate.Broadcast(CurrentDialogueRowName);
+		SubtitlesWidget->OnCurrentDialogueEnd();
 	}
+
+	OnCurrentDialogueEndDelegate.Broadcast(CurrentDialogueRowName);
 
 	//if there aren't other dialogues in "queue" to play
 	if (DialoguesToPlay.IsEmpty())
@@ -242,8 +253,10 @@ void USNS_DialogueWorldSubsystem::ManageDialogueEnd(bool bShouldRemoveFirst)
 		//CALL ON END ALL DIALOGUES
 		if (SubtitlesWidget)
 		{
-			SubtitlesWidget->OnAllDialoguesEndDelegate.Broadcast();
+			SubtitlesWidget->OnAllDialoguesEnd();
 		}
+		
+		OnAllDialoguesEndDelegate.Broadcast(CurrentDialogueRowName);
 	}
 	else
 	{
