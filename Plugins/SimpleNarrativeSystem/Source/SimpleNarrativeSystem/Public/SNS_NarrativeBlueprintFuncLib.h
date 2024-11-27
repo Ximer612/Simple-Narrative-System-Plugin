@@ -25,11 +25,11 @@ public:
 	static void SkipCurrentDialogueLine(UObject* WorldContextObject);
 
 	UFUNCTION(BlueprintCallable, Category = "Simple Narrative System", meta = (WorldContext = "WorldContextObject"))
-	static void RegisterEventOnEndDialogue(UObject* WorldContextObject, const FName DialogueRowName, const FRegisteredDelegate& OnDialogueEnd);
+	static void RegisterEventOnEndDialogue(UObject* WorldContextObject, const FName DialogueRowName, const bool bRepeatable, const FRegisteredDelegate& OnDialogueEnd);
 	UFUNCTION(BlueprintCallable, Category = "Simple Narrative System", meta = (WorldContext = "WorldContextObject"))
-	static void RegisterEventOnStartDialogue(UObject* WorldContextObject, const FName DialogueRowName, const FRegisteredDelegate& OnDialogueStart);
+	static void RegisterEventOnStartDialogue(UObject* WorldContextObject, const FName DialogueRowName, const bool bRepeatable, const FRegisteredDelegate& OnDialogueStart);
 	UFUNCTION(BlueprintCallable, Category = "Simple Narrative System", meta = (WorldContext = "WorldContextObject"))
-	static void RegisterEventOnAllDialogueEnd(UObject* WorldContextObject, const FRegisteredDelegate& OnAllDialoguesEnd);
+	static void RegisterEventOnAllDialogueEnd(UObject* WorldContextObject, const bool bRepeatable, const FRegisteredDelegate& OnAllDialoguesEnd);
 
 
 };

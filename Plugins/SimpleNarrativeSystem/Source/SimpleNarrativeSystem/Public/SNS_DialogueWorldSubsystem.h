@@ -30,6 +30,12 @@ private:
 	friend USNS_DialogueWorldSubsystem;
 };
 
+//struct DialogueMappedValue
+//{
+//	FName DialogueRowName;
+//	bool bRepeatable;
+//};
+
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnDialogueDelegate, FName);
 
 //DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAllDialogueEnd);
@@ -62,6 +68,9 @@ private:
 	float DialogueLineRemaningTime;
 	
 	TObjectPtr<USNS_Widget> SubtitlesWidget;
+	TObjectPtr<UAudioComponent> AudioComponent;
+	TArray<FSNS_Dialogue> DialoguesToPlay;
+	//TMap<DialogueMappedValue,TArray<FDelegateHandle>> BoundSingleFireCallbacks;
 
 	int32 CurrentDialogueLineIndex;
 
@@ -69,14 +78,8 @@ private:
 
 	FSNS_S_Dialogue* CurrentDialogue;
 
-	TArray<FSNS_Dialogue> DialoguesToPlay;
-
-	TObjectPtr<UAudioComponent> AudioComponent;
-
 	FOnDialogueDelegate OnCurrentDialogueEndDelegate;
-
 	FOnDialogueDelegate OnCurrentDialogueStartDelegate;
-
 	FOnDialogueDelegate OnAllDialoguesEndDelegate;
 
 public:

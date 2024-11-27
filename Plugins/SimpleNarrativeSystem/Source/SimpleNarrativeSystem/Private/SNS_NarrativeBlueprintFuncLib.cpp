@@ -68,7 +68,7 @@ void USNS_NarrativeBlueprintFuncLib::SkipCurrentDialogueLine(UObject* WorldConte
 
 }
 
-void USNS_NarrativeBlueprintFuncLib::RegisterEventOnEndDialogue(UObject* WorldContextObject, const FName DialogueRowName, const FRegisteredDelegate& OnDialogueEnd)
+void USNS_NarrativeBlueprintFuncLib::RegisterEventOnEndDialogue(UObject* WorldContextObject, const FName DialogueRowName, const bool bRepeatable, const FRegisteredDelegate& OnDialogueEnd)
 {
 	UWorld* CurrentWorld;
 
@@ -79,19 +79,39 @@ void USNS_NarrativeBlueprintFuncLib::RegisterEventOnEndDialogue(UObject* WorldCo
 		USNS_DialogueWorldSubsystem* NarrativeSubSystem = CurrentWorld->GetSubsystem<USNS_DialogueWorldSubsystem>();
 		if (NarrativeSubSystem)
 		{
-			FDelegateHandle Handle = NarrativeSubSystem->OnCurrentDialogueEndDelegate.AddLambda(
-				[DialogueRowName, OnDialogueEnd/*, Handle*/](FName DialogueName) {
+			FDelegateHandle* LambdaHandle = new FDelegateHandle();
+			*LambdaHandle = NarrativeSubSystem->OnCurrentDialogueEndDelegate.AddLambda(
+				[DialogueRowName, OnDialogueEnd, LambdaHandle, NarrativeSubSystem, bRepeatable](FName DialogueName) {
 					if (DialogueName == DialogueRowName)
 					{
 						OnDialogueEnd.ExecuteIfBound();
-						//NarrativeSubSystem->OnCurrentDialogueEndDelegate.Remove(Handle);
+						UE_LOG(LogTemp, Warning, TEXT("EXECUTED HANDLE!"));
+						if (!bRepeatable)
+						{
+							NarrativeSubSystem->OnCurrentDialogueEndDelegate.Remove(*LambdaHandle);
+							UE_LOG(LogTemp, Error, TEXT("REMOVED HANDLE! %p"), LambdaHandle);
+							delete LambdaHandle;
+						}
 					}				
 				});
 		}
 	}
 }
 
-void USNS_NarrativeBlueprintFuncLib::RegisterEventOnStartDialogue(UObject* WorldContextObject, const FName DialogueRowName, const FRegisteredDelegate& OnDialogueStart)
+
+//if (!bRepeatable)
+//{
+//	NarrativeSubSystem->OnCurrentDialogueEndDelegate.AddLambda(
+//		[DialogueRowName, NarrativeSubSystem,Handle](FName DialogueName) {
+//			if (DialogueName == DialogueRowName)
+//			{
+//				NarrativeSubSystem->OnCurrentDialogueEndDelegate.Remove(Handle);
+//				UE_LOG(LogTemp, Error, TEXT("REMOVED HANDLE!"));
+//			}
+//		});
+//}
+
+void USNS_NarrativeBlueprintFuncLib::RegisterEventOnStartDialogue(UObject* WorldContextObject, const FName DialogueRowName, const bool bRepeatable, const FRegisteredDelegate& OnDialogueStart)
 {
 	UWorld* CurrentWorld;
 
@@ -103,7 +123,7 @@ void USNS_NarrativeBlueprintFuncLib::RegisterEventOnStartDialogue(UObject* World
 		if (NarrativeSubSystem)
 		{
 			FDelegateHandle Handle = NarrativeSubSystem->OnCurrentDialogueStartDelegate.AddLambda(
-				[DialogueRowName, OnDialogueStart, Handle](FName DialogueName) {
+				[DialogueRowName, OnDialogueStart](FName DialogueName) {
 					if (DialogueName == DialogueRowName)
 					{
 						OnDialogueStart.ExecuteIfBound();
@@ -113,7 +133,7 @@ void USNS_NarrativeBlueprintFuncLib::RegisterEventOnStartDialogue(UObject* World
 	}
 }
 
-void USNS_NarrativeBlueprintFuncLib::RegisterEventOnAllDialogueEnd(UObject* WorldContextObject, const FRegisteredDelegate& OnAllDialoguesEnd)
+void USNS_NarrativeBlueprintFuncLib::RegisterEventOnAllDialogueEnd(UObject* WorldContextObject, const bool bRepeatable, const FRegisteredDelegate& OnAllDialoguesEnd)
 {
 	UWorld* CurrentWorld;
 
@@ -125,7 +145,7 @@ void USNS_NarrativeBlueprintFuncLib::RegisterEventOnAllDialogueEnd(UObject* Worl
 		if (NarrativeSubSystem)
 		{
 			FDelegateHandle Handle = NarrativeSubSystem->OnAllDialoguesEndDelegate.AddLambda(
-				[OnAllDialoguesEnd, Handle](FName DialogueName) {
+				[OnAllDialoguesEnd](FName DialogueName) {
 						OnAllDialoguesEnd.ExecuteIfBound();
 				});
 		}
