@@ -43,7 +43,7 @@ void USNS_DialogueWorldSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 void USNS_DialogueWorldSubsystem::CreateSubtitlesWidget(const UWorld& InWorld)
 {
 	//TODO: find a way to remove this path
-	FStringClassReference MyWidgetClassRef(TEXT("/SimpleNarrativeSystem/UserInterface/WBP_Subtitles.WBP_Subtitles_C"));
+	FSoftClassPath MyWidgetClassRef(TEXT("/SimpleNarrativeSystem/UserInterface/WBP_Subtitles.WBP_Subtitles_C"));
 
 	TSubclassOf<USNS_Widget> SubtitlesWidgetClass = MyWidgetClassRef.TryLoadClass<USNS_Widget>();
 
@@ -75,10 +75,36 @@ void USNS_DialogueWorldSubsystem::Deinitialize()
 		SubtitlesWidget->Destruct();
 	if (AudioComponent)
 		AudioComponent->DestroyComponent();
-
+	
 	OnCurrentDialogueEndDelegate.Clear();
 	OnCurrentDialogueStartDelegate.Clear();
 	OnAllDialoguesEndDelegate.Clear();
+
+	for (TPair<FName,FDialogueEventsLambdas>& Pair : PerDialogueLambdas)
+	{
+		for (size_t i = 0; i < Pair.Value.OnEnd.Num(); i++)
+		{
+			Pair.Value.OnEnd[i].DelegateHandle.Reset();
+		}
+
+		for (size_t i = 0; i < Pair.Value.OnStart.Num(); i++)
+		{
+			Pair.Value.OnEnd[i].DelegateHandle.Reset();
+		}
+	}
+
+	for (size_t i = 0; i < PerDialogueLambdasOnAllEnd.Num(); i++)
+	{
+		PerDialogueLambdasOnAllEnd[i].DelegateHandle.Reset();
+	}
+
+	PerDialogueLambdasOnAllEnd.Empty();
+	PerDialogueLambdas.Empty();
+	DialoguesToPlay.Empty();
+
+	UE_LOG(LogTemp, Error, TEXT("DialoguesToPlay pointer is %p"), &DialoguesToPlay);
+	UE_LOG(LogTemp, Error, TEXT("DialoguesToPlay num is %d"), DialoguesToPlay.Num());
+	UE_LOG(LogTemp, Error, TEXT("DialoguesToPlay max is %d"), DialoguesToPlay.Max());
 }
 
 void USNS_DialogueWorldSubsystem::Tick(float DeltaTime)
@@ -127,7 +153,9 @@ TStatId USNS_DialogueWorldSubsystem::GetStatId() const
 
 void USNS_DialogueWorldSubsystem::EnqueueDialogue(const FSNS_Dialogue&& InDialogue, const bool bStopAllOtherDialogues)
 {
-	if (bNoSpeakerDataTable || bIsDisabled || DialoguesToPlay.Contains(InDialogue))
+	UE_LOG(LogTemp, Error, TEXT("DialoguesToPlay num is %d"), DialoguesToPlay.Num());
+
+	if (bNoSpeakerDataTable || bIsDisabled || DialoguesToPlay.Contains(InDialogue) )
 	{
 		return;
 	}
@@ -179,6 +207,8 @@ void USNS_DialogueWorldSubsystem::CreateAudioComponent(const UWorld& InWorld)
 	{
 		AudioComponent->RegisterComponentWithWorld(InWorld.GetWorld());
 	}
+
+	UE_LOG(LogTemp, Error, TEXT("The AudioComponent pointer is %p"), &AudioComponent);
 }
 
 void USNS_DialogueWorldSubsystem::PlayDialogue(bool& AllLinesEnded)
@@ -203,9 +233,10 @@ void USNS_DialogueWorldSubsystem::PlayDialogue(bool& AllLinesEnded)
 
 	CurrentDialogue = TempDialogue;
 
-	if (CurrentDialogue->AudioClip.IsValid())
-	{
 		CurrentDialogue->AudioClip.LoadSynchronous();
+
+	if (CurrentDialogue->AudioClip != nullptr)
+	{
 
 		if (CurrentDialogue->AudioClip)
 		{
@@ -220,6 +251,11 @@ void USNS_DialogueWorldSubsystem::PlayDialogue(bool& AllLinesEnded)
 	bIsPlayingAudio = true;
 
 	OnCurrentDialogueStartDelegate.Broadcast(CurrentDialogueRowName);
+
+	if (!PerDialogueLambdas.Contains(CurrentDialogueRowName))
+	{
+		return;
+	}
 
 	for (int32 i = 0; i < PerDialogueLambdas[CurrentDialogueRowName].OnStart.Num(); i++)
 	{
@@ -255,12 +291,15 @@ void USNS_DialogueWorldSubsystem::ManageDialogueEnd(bool bShouldRemoveFirst)
 
 	OnCurrentDialogueEndDelegate.Broadcast(CurrentDialogueRowName);
 
-	for (int32 i = 0; i < PerDialogueLambdas[CurrentDialogueRowName].OnEnd.Num(); i++)
+	if (PerDialogueLambdas.Contains(CurrentDialogueRowName) )
 	{
-		if (!PerDialogueLambdas[CurrentDialogueRowName].OnEnd[i].bRepeatable)
+		for (int32 i = 0; i < PerDialogueLambdas[CurrentDialogueRowName].OnEnd.Num(); i++)
 		{
-			OnCurrentDialogueEndDelegate.Remove(PerDialogueLambdas[CurrentDialogueRowName].OnEnd[i].DelegateHandle);
-			UE_LOG(LogTemp, Error, TEXT("REMOVED HANDLE!"));
+			if (!PerDialogueLambdas[CurrentDialogueRowName].OnEnd[i].bRepeatable)
+			{
+				OnCurrentDialogueEndDelegate.Remove(PerDialogueLambdas[CurrentDialogueRowName].OnEnd[i].DelegateHandle);
+				UE_LOG(LogTemp, Error, TEXT("REMOVED HANDLE!"));
+			}
 		}
 	}
 
