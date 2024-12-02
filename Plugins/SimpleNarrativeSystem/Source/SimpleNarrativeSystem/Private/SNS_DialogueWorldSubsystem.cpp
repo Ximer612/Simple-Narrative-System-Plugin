@@ -220,6 +220,15 @@ void USNS_DialogueWorldSubsystem::PlayDialogue(bool& AllLinesEnded)
 	bIsPlayingAudio = true;
 
 	OnCurrentDialogueStartDelegate.Broadcast(CurrentDialogueRowName);
+
+	for (int32 i = 0; i < PerDialogueLambdas[CurrentDialogueRowName].OnStart.Num(); i++)
+	{
+		if (!PerDialogueLambdas[CurrentDialogueRowName].OnStart[i].bRepeatable)
+		{
+			OnCurrentDialogueEndDelegate.Remove(PerDialogueLambdas[CurrentDialogueRowName].OnStart[i].DelegateHandle);
+			UE_LOG(LogTemp, Error, TEXT("REMOVED HANDLE!"));
+		}
+	}
 }
 
 void USNS_DialogueWorldSubsystem::ManageDialogueEnd(bool bShouldRemoveFirst)
@@ -246,6 +255,15 @@ void USNS_DialogueWorldSubsystem::ManageDialogueEnd(bool bShouldRemoveFirst)
 
 	OnCurrentDialogueEndDelegate.Broadcast(CurrentDialogueRowName);
 
+	for (int32 i = 0; i < PerDialogueLambdas[CurrentDialogueRowName].OnEnd.Num(); i++)
+	{
+		if (!PerDialogueLambdas[CurrentDialogueRowName].OnEnd[i].bRepeatable)
+		{
+			OnCurrentDialogueEndDelegate.Remove(PerDialogueLambdas[CurrentDialogueRowName].OnEnd[i].DelegateHandle);
+			UE_LOG(LogTemp, Error, TEXT("REMOVED HANDLE!"));
+		}
+	}
+
 	//if there aren't other dialogues in "queue" to play
 	if (DialoguesToPlay.IsEmpty())
 	{
@@ -257,6 +275,15 @@ void USNS_DialogueWorldSubsystem::ManageDialogueEnd(bool bShouldRemoveFirst)
 		}
 		
 		OnAllDialoguesEndDelegate.Broadcast(CurrentDialogueRowName);
+
+		for (int32 i = 0; i < PerDialogueLambdasOnAllEnd.Num(); i++)
+		{
+			if (!PerDialogueLambdasOnAllEnd[i].bRepeatable)
+			{
+				OnCurrentDialogueEndDelegate.Remove(PerDialogueLambdasOnAllEnd[i].DelegateHandle);
+				UE_LOG(LogTemp, Error, TEXT("REMOVED HANDLE!"));
+			}
+		}
 	}
 	else
 	{
@@ -294,4 +321,68 @@ void USNS_DialogueWorldSubsystem::SkipCurrentLine()
 {
 	DialogueLineRemaningTime = 0;
 	bShouldAdjustAudioTiming = true;
+}
+
+void USNS_DialogueWorldSubsystem::CheckDialogueMapContainsRowName(const FName& DialogueRowName)
+{
+	if (!PerDialogueLambdas.Contains(DialogueRowName))
+	{
+		PerDialogueLambdas.Add(DialogueRowName, FDialogueEventsLambdas()); //without move temp?
+	}
+
+}
+
+void USNS_DialogueWorldSubsystem::AddOnCurrentDialogueEnd(const FName& DialogueRowName, const bool bRepeatable, const FRegisteredDelegate& OnDialogueEnd)
+{
+	CheckDialogueMapContainsRowName(DialogueRowName);
+
+	FDelegateHandle LambdaHandle = OnCurrentDialogueEndDelegate.AddLambda(
+		[DialogueRowName, OnDialogueEnd](FName DialogueName) {
+			if (DialogueName == DialogueRowName)
+			{
+				OnDialogueEnd.ExecuteIfBound();
+				UE_LOG(LogTemp, Warning, TEXT("EXECUTED LAMBDA!"));
+			}
+		});
+
+	FDialogueLambda DialogueLambda;
+	DialogueLambda.bRepeatable = bRepeatable;
+	DialogueLambda.DelegateHandle = LambdaHandle;
+
+	PerDialogueLambdas[DialogueRowName].OnEnd.Add(DialogueLambda); // move? unique?
+}
+
+void USNS_DialogueWorldSubsystem::AddOnCurrentDialogueStart(const FName& DialogueRowName, const bool bRepeatable, const FRegisteredDelegate& OnDialogueStart)
+{
+	CheckDialogueMapContainsRowName(DialogueRowName);
+
+	FDelegateHandle LambdaHandle = OnCurrentDialogueStartDelegate.AddLambda(
+		[DialogueRowName, OnDialogueStart](FName DialogueName) {
+			if (DialogueName == DialogueRowName)
+			{
+				OnDialogueStart.ExecuteIfBound();
+				UE_LOG(LogTemp, Warning, TEXT("EXECUTED LAMBDA!"));
+			}
+		});
+
+	FDialogueLambda DialogueLambda;
+	DialogueLambda.bRepeatable = bRepeatable;
+	DialogueLambda.DelegateHandle = LambdaHandle;
+
+	PerDialogueLambdas[DialogueRowName].OnStart.Add(DialogueLambda); // move? unique?
+}
+
+void USNS_DialogueWorldSubsystem::AddOnAllCurrentDialogueEnd(const bool bRepeatable, const FRegisteredDelegate& OnAllDialogueEnd)
+{
+	FDelegateHandle LambdaHandle = OnAllDialoguesEndDelegate.AddLambda(
+		[OnAllDialogueEnd](FName DialogueName) {
+			OnAllDialogueEnd.ExecuteIfBound();
+			UE_LOG(LogTemp, Warning, TEXT("EXECUTED LAMBDA!"));
+		});
+
+	FDialogueLambda DialogueLambda;
+	DialogueLambda.bRepeatable = bRepeatable;
+	DialogueLambda.DelegateHandle = LambdaHandle;
+
+	PerDialogueLambdasOnAllEnd.Add(DialogueLambda);
 }

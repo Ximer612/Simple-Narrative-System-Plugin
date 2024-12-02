@@ -30,11 +30,23 @@ private:
 	friend USNS_DialogueWorldSubsystem;
 };
 
-//struct DialogueMappedValue
-//{
-//	FName DialogueRowName;
-//	bool bRepeatable;
-//};
+struct FDialogueLambda
+{
+	FDelegateHandle DelegateHandle;
+	bool bRepeatable;
+
+	//bool operator==(const FDialogueLambda& Other) const {
+
+	//	return &DelegateHandle == &Other.DelegateHandle;
+	//}
+
+};
+
+struct FDialogueEventsLambdas
+{
+	TArray<FDialogueLambda> OnStart;
+	TArray<FDialogueLambda> OnEnd;
+};
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnDialogueDelegate, FName);
 
@@ -70,7 +82,8 @@ private:
 	TObjectPtr<USNS_Widget> SubtitlesWidget;
 	TObjectPtr<UAudioComponent> AudioComponent;
 	TArray<FSNS_Dialogue> DialoguesToPlay;
-	//TMap<DialogueMappedValue,TArray<FDelegateHandle>> BoundSingleFireCallbacks;
+	TMap<FName, FDialogueEventsLambdas> PerDialogueLambdas;
+	TArray<FDialogueLambda> PerDialogueLambdasOnAllEnd;
 
 	int32 CurrentDialogueLineIndex;
 
@@ -106,5 +119,11 @@ private:
 
 	void SkipCurrentLine();
 
+	void CheckDialogueMapContainsRowName(const FName& DialogueRowName);
+
+	void AddOnCurrentDialogueEnd(const FName& DialogueRowName, const bool bRepeatable, const FRegisteredDelegate& OnDialogueEnd);
+	void AddOnCurrentDialogueStart(const FName& DialogueRowName, const bool bRepeatable, const FRegisteredDelegate& OnDialogueStart);
+	void AddOnAllCurrentDialogueEnd(const bool bRepeatable, const FRegisteredDelegate& OnAllDialogueEnd);
+	
 	friend USNS_NarrativeBlueprintFuncLib;
 };
