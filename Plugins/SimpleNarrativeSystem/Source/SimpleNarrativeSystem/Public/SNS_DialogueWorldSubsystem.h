@@ -30,6 +30,28 @@ private:
 	friend USNS_DialogueWorldSubsystem;
 };
 
+struct FDialogueLambda
+{
+	FDelegateHandle DelegateHandle;
+	bool bRepeatable;
+
+	//bool operator==(const FDialogueLambda& Other) const {
+
+	//	return &DelegateHandle == &Other.DelegateHandle;
+	//}
+
+};
+
+struct FDialogueEventsLambdas
+{
+	TArray<FDialogueLambda> OnStart;
+	TArray<FDialogueLambda> OnEnd;
+};
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnDialogueDelegate, FName);
+
+//DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAllDialogueEnd);
+
 /**
  * 
  */
@@ -67,6 +89,25 @@ private:
 	bool bIsPlayingAudio;
 	bool bShouldAdjustAudioTiming;
 
+	float DialogueLineElapsedTime;
+	float DialogueLineRemaningTime;
+	
+	TObjectPtr<USNS_Widget> SubtitlesWidget;
+	TObjectPtr<UAudioComponent> AudioComponent;
+	TArray<FSNS_Dialogue> DialoguesToPlay;
+	TMap<FName, FDialogueEventsLambdas> PerDialogueLambdas;
+	TArray<FDialogueLambda> PerDialogueLambdasOnAllEnd;
+
+	int32 CurrentDialogueLineIndex;
+
+	FName CurrentDialogueRowName;
+
+	FSNS_S_Dialogue* CurrentDialogue;
+
+	FOnDialogueDelegate OnCurrentDialogueEndDelegate;
+	FOnDialogueDelegate OnCurrentDialogueStartDelegate;
+	FOnDialogueDelegate OnAllDialoguesEndDelegate;
+
 public:
 	// USubsystem implementation Begin
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
@@ -91,5 +132,11 @@ private:
 
 	void SkipCurrentLine();
 
+	void CheckDialogueMapContainsRowName(const FName& DialogueRowName);
+
+	void AddOnCurrentDialogueEnd(const FName& DialogueRowName, const bool bRepeatable, const FRegisteredDelegate& OnDialogueEnd);
+	void AddOnCurrentDialogueStart(const FName& DialogueRowName, const bool bRepeatable, const FRegisteredDelegate& OnDialogueStart);
+	void AddOnAllCurrentDialogueEnd(const bool bRepeatable, const FRegisteredDelegate& OnAllDialogueEnd);
+	
 	friend USNS_NarrativeBlueprintFuncLib;
 };

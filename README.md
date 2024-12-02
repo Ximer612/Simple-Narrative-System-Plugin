@@ -61,6 +61,14 @@ Yes, because with this way I can access more easily to it without some strange b
 Maybe for a more easily add of dialogues.
 ```
 
+- Should I remove rich text?
+
+```
+No, because I want to use their cool effect that can be made using decorators.
+If you don't want rich text you can still remove it by looking only into blueprints!
+```
+
+
 - Done and to-do stuff
 ```
 DONE: Show/Hide subtitles and still audio plays
@@ -76,12 +84,12 @@ DONE: Button for skip current line working with audio
 DONE: Customizable text separator between speaker's name and text
 DONE: Dialogue that stops others (main story over NPC dialogue)
 DONE: Add custom effects for rich text with tags: <wave>, <rainbow>
+DONE: Add dialogues event system (OnStart,OnEnd,OnAllEnd)
 
 TO-DO: Increase dialogue stack-on-each-other dialogue number
 TO-DO: Add custom duration to fade-out
 TO-DO: Change font to every font easily (cannot be done with rich text)
 TO-DO: Change text size and border (cannot be done with rich text)
-TO-DO: Add rich text decorators for some fancy effects
+
 TO-DO: Audio and dialogue stops and continues with a button press
-TO-DO: Maybe remove rich text?
 ```

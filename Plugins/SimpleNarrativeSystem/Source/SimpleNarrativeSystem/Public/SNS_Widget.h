@@ -8,9 +8,6 @@
 #include "Structs/SNS_S_Speaker.h"
 #include "SNS_Widget.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDialogueEnd, FName, DialogueRowName);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAllDialogueEnd);
-
 /**
  * 
  */
@@ -31,11 +28,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	struct FSNS_S_SettingsData SettingsData;
 
-	UPROPERTY(BlueprintAssignable)
-	FOnDialogueEnd OnCurrentDialogueEndDelegate;
-
-	UPROPERTY(BlueprintAssignable)
-	FOnAllDialogueEnd OnAllDialoguesEndDelegate;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (RequiredAssetDataTags = "RowStructure=/Script/SimpleNarrativeSystem.SNS_S_Dialogue"))
+	TSoftObjectPtr<UDataTable> SpeakersDataTable;
 
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
 	void OnReceivedDialogue(const FSNS_S_Speaker& Speaker, const FSNS_S_TimeStamp& TimeStamp);
@@ -48,4 +42,10 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void StopAllOtherDialogues();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnCurrentDialogueEnd();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnAllDialoguesEnd();
 };

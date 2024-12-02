@@ -7,65 +7,68 @@
 #include "SNS_DialogueWorldSubsystem.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/RichTextBlock.h"
-
 #include "SNS_I_Subtitles.h"
-#include <Fonts/FontMeasure.h>
+#include "Fonts/FontMeasure.h"
 
 #define LOCTEXT_NAMESPACE "SNS_NameSpace"
 
-void USNS_NarrativeBlueprintFuncLib::EnqueueDialogue(UObject* WorldContextObject, const FName DialogueRowName, const UDataTable* DialoguesDataTable, const bool bStopAllOtherDialogues)
+USNS_DialogueWorldSubsystem* GetNarrativeSubSystem(UObject* WorldContextObject)
+{
+	static USNS_DialogueWorldSubsystem* NarrativeSubSystem;
+
+	if (NarrativeSubSystem)
+	{
+		return NarrativeSubSystem;
+	}
+
+	UWorld* CurrentWorld;
+
+	GET_WORLD_FROM_CONTEXT(CurrentWorld, WorldContextObject);
+
+	if (CurrentWorld)
+	{
+		NarrativeSubSystem = CurrentWorld->GetSubsystem<USNS_DialogueWorldSubsystem>();
+		if (NarrativeSubSystem)
+		{
+			return NarrativeSubSystem;
+		}
+	}
+
+	return nullptr;
+}
+
+const FName USNS_NarrativeBlueprintFuncLib::EnqueueDialogue(UObject* WorldContextObject,  const UDataTable* DialoguesDataTable, const FName DialogueRowName, const bool bStopAllOtherDialogues)
 {
 
 #if WITH_EDITOR
 	if (DialogueRowName == TEXT("") || DialogueRowName == TEXT("None"))
 	{
 		FMessageLog("PIE").Error(LOCTEXT("InvalidRow", "Dialogue row name cannot be None or null!"));
-		return;
+		return "";
 	}
 #endif
 
-	UWorld* CurrentWorld;
+	GetNarrativeSubSystem(WorldContextObject)->EnqueueDialogue({ DialogueRowName ,DialoguesDataTable }, bStopAllOtherDialogues);
 
-	GET_WORLD_FROM_CONTEXT(CurrentWorld, WorldContextObject);
-
-	if (CurrentWorld)
-	{
-		USNS_DialogueWorldSubsystem* NarrativeSubSystem = CurrentWorld->GetSubsystem<USNS_DialogueWorldSubsystem>();
-		if (NarrativeSubSystem)
-		{
-			NarrativeSubSystem->EnqueueDialogue({ DialogueRowName ,DialoguesDataTable}, bStopAllOtherDialogues);
-		}
-	}
+	return DialogueRowName;
 }
 
 void USNS_NarrativeBlueprintFuncLib::SkipCurrentDialogueLine(UObject* WorldContextObject)
 {
-	UWorld* CurrentWorld;
-
-	GET_WORLD_FROM_CONTEXT(CurrentWorld, WorldContextObject);
-
-	if (CurrentWorld)
-	{
-		USNS_DialogueWorldSubsystem* NarrativeSubSystem = CurrentWorld->GetSubsystem<USNS_DialogueWorldSubsystem>();
-		if (NarrativeSubSystem)
-		{
-			NarrativeSubSystem->SkipCurrentLine();
-		}
-	}
-
+	GetNarrativeSubSystem(WorldContextObject)->SkipCurrentLine();
 }
 
-void USNS_NarrativeBlueprintFuncLib::GetRichTextInfo(const URichTextBlock* RichTextBlock, const FSlateFontInfo& InFontInfo, FVector2D& Measure)
+void USNS_NarrativeBlueprintFuncLib::RegisterEventOnEndDialogue(UObject* WorldContextObject, const FName DialogueRowName, const bool bRepeatable, const FRegisteredDelegate& OnDialogueEnd)
 {
-	//RichTextBlock
-	const FText& Text = RichTextBlock->GetText();
+	GetNarrativeSubSystem(WorldContextObject)->AddOnCurrentDialogueEnd(DialogueRowName, bRepeatable, OnDialogueEnd);
+}
 
-	const TSharedRef<FSlateFontMeasure> FontMeasureService = FSlateApplication::Get().GetRenderer()->GetFontMeasureService();
+void USNS_NarrativeBlueprintFuncLib::RegisterEventOnStartDialogue(UObject* WorldContextObject, const FName DialogueRowName, const bool bRepeatable, const FRegisteredDelegate& OnDialogueStart)
+{
+	GetNarrativeSubSystem(WorldContextObject)->AddOnCurrentDialogueStart(DialogueRowName, bRepeatable, OnDialogueStart);
+}
 
-	UE::Slate::FDeprecateVector2DResult Result = FontMeasureService->Measure(Text, InFontInfo);
-
-	Measure = Result;
-
-	UE_LOG(LogTemp, Warning, TEXT("Desired size = %f"), RichTextBlock->GetDesiredSize());
-
+void USNS_NarrativeBlueprintFuncLib::RegisterEventOnAllDialogueEnd(UObject* WorldContextObject, const bool bRepeatable, const FRegisteredDelegate& OnAllDialoguesEnd)
+{
+	GetNarrativeSubSystem(WorldContextObject)->AddOnAllCurrentDialogueEnd(bRepeatable, OnAllDialoguesEnd);
 }
