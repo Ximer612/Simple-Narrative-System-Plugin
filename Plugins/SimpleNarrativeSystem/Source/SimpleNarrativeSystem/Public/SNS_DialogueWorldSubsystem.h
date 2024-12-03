@@ -8,6 +8,7 @@
 #include "Structs/SNS_S_SettingsData.h"
 #include "SNS_NarrativeBlueprintFuncLib.h"
 #include "SNS_Widget.h"
+#include "SNS_Manager.h"
 #include "SNS_DialogueWorldSubsystem.generated.h"
 
 class FSNS_Dialogue
@@ -81,6 +82,7 @@ private:
 	
 	TObjectPtr<USNS_Widget> SubtitlesWidget;
 	TObjectPtr<UAudioComponent> AudioComponent;
+	TObjectPtr<ASNS_Manager> InGameManager;
 	TArray<FSNS_Dialogue> DialoguesToPlay;
 	TMap<FName, FDialogueEventsLambdas> PerDialogueLambdas;
 	TArray<FDialogueLambda> PerDialogueLambdasOnAllEnd;

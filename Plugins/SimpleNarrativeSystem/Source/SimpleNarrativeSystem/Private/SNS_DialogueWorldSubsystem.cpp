@@ -71,10 +71,16 @@ void USNS_DialogueWorldSubsystem::Deinitialize()
 {
 	Super::Deinitialize();
 
-	if(SubtitlesWidget)
+	if (SubtitlesWidget)
+	{
 		SubtitlesWidget->Destruct();
+	}
+
 	if (AudioComponent)
+	{
 		AudioComponent->DestroyComponent();
+		AudioComponent->UnregisterComponent();
+	}
 	
 	OnCurrentDialogueEndDelegate.Clear();
 	OnCurrentDialogueStartDelegate.Clear();
@@ -233,7 +239,10 @@ void USNS_DialogueWorldSubsystem::PlayDialogue(bool& AllLinesEnded)
 
 	CurrentDialogue = TempDialogue;
 
+	if (!CurrentDialogue->AudioClip.IsNull())
+	{
 		CurrentDialogue->AudioClip.LoadSynchronous();
+	}
 
 	if (CurrentDialogue->AudioClip != nullptr)
 	{
@@ -358,6 +367,7 @@ void USNS_DialogueWorldSubsystem::SendDialogue()
 
 void USNS_DialogueWorldSubsystem::SkipCurrentLine()
 {
+	//TODO: only if current dialogue can be skipped
 	DialogueLineRemaningTime = 0;
 	bShouldAdjustAudioTiming = true;
 }

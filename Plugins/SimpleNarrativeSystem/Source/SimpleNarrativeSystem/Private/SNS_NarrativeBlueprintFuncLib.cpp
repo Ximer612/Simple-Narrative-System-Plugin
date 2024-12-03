@@ -16,7 +16,7 @@ USNS_DialogueWorldSubsystem* GetNarrativeSubSystem(UObject* WorldContextObject)
 {
 	static USNS_DialogueWorldSubsystem* NarrativeSubSystem;
 
-	if (NarrativeSubSystem)
+	if (NarrativeSubSystem && !NarrativeSubSystem->IsPendingKill())
 	{
 		return NarrativeSubSystem;
 	}
