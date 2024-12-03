@@ -3,11 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AudioDevice.h"
 #include "SNS_Widget.h"
 #include "GameFramework/Actor.h"
 #include "SNS_Manager.generated.h"
 
-UCLASS()
+UCLASS(Blueprintable)
 class SIMPLENARRATIVESYSTEM_API ASNS_Manager : public AActor
 {
 	GENERATED_BODY()
@@ -16,7 +17,10 @@ public:
 	// Sets default values for this actor's properties
 	ASNS_Manager();
 
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USNS_Widget> SubtitlesWidget;
+
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UAudioComponent> AudioComponent;
 
 protected:

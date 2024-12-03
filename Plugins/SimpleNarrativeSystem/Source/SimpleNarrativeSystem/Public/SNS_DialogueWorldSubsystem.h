@@ -7,7 +7,6 @@
 #include "Structs/SNS_S_Dialogue.h"
 #include "Structs/SNS_S_SettingsData.h"
 #include "SNS_NarrativeBlueprintFuncLib.h"
-#include "SNS_Widget.h"
 #include "SNS_Manager.h"
 #include "SNS_DialogueWorldSubsystem.generated.h"
 
@@ -35,12 +34,6 @@ struct FDialogueLambda
 {
 	FDelegateHandle DelegateHandle;
 	bool bRepeatable;
-
-	//bool operator==(const FDialogueLambda& Other) const {
-
-	//	return &DelegateHandle == &Other.DelegateHandle;
-	//}
-
 };
 
 struct FDialogueEventsLambdas
@@ -50,8 +43,6 @@ struct FDialogueEventsLambdas
 };
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnDialogueDelegate, FName);
-
-//DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAllDialogueEnd);
 
 /**
  * 
@@ -80,17 +71,13 @@ private:
 	float DialogueLineElapsedTime;
 	float DialogueLineRemaningTime;
 	
-	TObjectPtr<USNS_Widget> SubtitlesWidget;
-	TObjectPtr<UAudioComponent> AudioComponent;
 	TObjectPtr<ASNS_Manager> InGameManager;
 	TArray<FSNS_Dialogue> DialoguesToPlay;
 	TMap<FName, FDialogueEventsLambdas> PerDialogueLambdas;
 	TArray<FDialogueLambda> PerDialogueLambdasOnAllEnd;
 
 	int32 CurrentDialogueLineIndex;
-
 	FName CurrentDialogueRowName;
-
 	FSNS_S_Dialogue* CurrentDialogue;
 
 	FOnDialogueDelegate OnCurrentDialogueEndDelegate;
@@ -113,8 +100,6 @@ public:
 	void EnqueueDialogue(const FSNS_Dialogue&& InDialogue, const bool bStopAllOtherDialogues);
 
 private:
-	void CreateSubtitlesWidget(const UWorld& InWorld);
-	void CreateAudioComponent(const UWorld& InWorld);
 	void PlayDialogue(bool& AllLinesEnded);
 	void ManageDialogueEnd(bool bShouldRemoveFirst = true);
 	void SendDialogue();
@@ -126,6 +111,9 @@ private:
 	void AddOnCurrentDialogueEnd(const FName& DialogueRowName, const bool bRepeatable, const FRegisteredDelegate& OnDialogueEnd);
 	void AddOnCurrentDialogueStart(const FName& DialogueRowName, const bool bRepeatable, const FRegisteredDelegate& OnDialogueStart);
 	void AddOnAllCurrentDialogueEnd(const bool bRepeatable, const FRegisteredDelegate& OnAllDialogueEnd);
+	void ClearTMap();
+
+	void CallDialogueDelegate(FOnDialogueDelegate& InDialogueDelegate, const FName& InDialogueRowName, const bool bOnStart);
 	
 	friend USNS_NarrativeBlueprintFuncLib;
 };

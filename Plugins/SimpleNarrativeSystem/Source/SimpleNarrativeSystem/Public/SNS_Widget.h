@@ -25,9 +25,6 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	struct FSNS_S_SettingsData SettingsData;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (RequiredAssetDataTags = "RowStructure=/Script/SimpleNarrativeSystem.SNS_S_Dialogue"))
-	TSoftObjectPtr<UDataTable> SpeakersDataTable;
-
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
 	void OnReceivedDialogue(const FSNS_S_Speaker& Speaker, const FSNS_S_TimeStamp& TimeStamp);
 
