@@ -263,8 +263,6 @@ void USNS_DialogueWorldSubsystem::SkipCurrentLine()
 
 	DialogueLineRemaningTime = 0;
 	bShouldAdjustAudioTiming = true;
-
-	UE_LOG(LogTemp, Warning, TEXT("SKIPPED LINE!"));
 }
 
 void USNS_DialogueWorldSubsystem::CheckDialogueMapContainsRowName(const FName& DialogueRowName)
@@ -285,7 +283,6 @@ void USNS_DialogueWorldSubsystem::AddOnCurrentDialogueEnd(const FName& DialogueR
 			if (DialogueName == DialogueRowName)
 			{
 				OnDialogueEnd.ExecuteIfBound();
-				UE_LOG(LogTemp, Warning, TEXT("EXECUTED LAMBDA!"));
 			}
 		});
 
@@ -305,7 +302,6 @@ void USNS_DialogueWorldSubsystem::AddOnCurrentDialogueStart(const FName& Dialogu
 			if (DialogueName == DialogueRowName)
 			{
 				OnDialogueStart.ExecuteIfBound();
-				UE_LOG(LogTemp, Warning, TEXT("EXECUTED LAMBDA!"));
 			}
 		});
 
@@ -321,7 +317,6 @@ void USNS_DialogueWorldSubsystem::AddOnAllCurrentDialogueEnd(const bool bRepeata
 	FDelegateHandle LambdaHandle = OnAllDialoguesEndDelegate.AddLambda(
 		[OnAllDialogueEnd](FName DialogueName) {
 			OnAllDialogueEnd.ExecuteIfBound();
-			UE_LOG(LogTemp, Warning, TEXT("EXECUTED LAMBDA!"));
 		});
 
 	FDialogueLambda DialogueLambda;

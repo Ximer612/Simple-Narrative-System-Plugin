@@ -13,30 +13,11 @@ void FSNS_DataTableCustomization::CustomizeHeader(TSharedRef<class IPropertyHand
 	DataTablePropertyHandle = InStructPropertyHandle->GetChildHandle("DataTable");
 	RowNamePropertyHandle = InStructPropertyHandle->GetChildHandle("RowName");
 
-	if (InStructPropertyHandle->HasMetaData(TEXT("DataTable")))
-	{
-		// Find data table from asset ref
-		const FString& DataTablePath = InStructPropertyHandle->GetMetaData(TEXT("DataTable"));
-		if (UDataTable* DataTable = LoadObject<UDataTable>(nullptr, *DataTablePath, nullptr))
-		{
-			DataTablePropertyHandle->SetValue(DataTable);
-		}
-		else
-		{
-			UE_LOG(LogDataTable, Warning, TEXT("No Datatable found at %s"), *DataTablePath);
-		}
-	}
-	else
-	{
-		UE_LOG(LogDataTable, Warning, TEXT("No Datatable meta tag present on property %s"), *InStructPropertyHandle->GetPropertyDisplayName().ToString());
-	}
-
 	FPropertyComboBoxArgs ComboArgs(RowNamePropertyHandle,
 		FOnGetPropertyComboBoxStrings::CreateSP(this, &FSNS_DataTableCustomization::OnGetRowStrings),
 		FOnGetPropertyComboBoxValue::CreateSP(this, &FSNS_DataTableCustomization::OnGetRowValueString));
 
 	ComboArgs.ShowSearchForItemCount = 1;
-
 
 	TSharedRef<SWidget> BrowseTableButton = PropertyCustomizationHelpers::MakeBrowseButton(
 		FSimpleDelegate::CreateSP(this, &FSNS_DataTableCustomization::BrowseTableButtonClicked),
