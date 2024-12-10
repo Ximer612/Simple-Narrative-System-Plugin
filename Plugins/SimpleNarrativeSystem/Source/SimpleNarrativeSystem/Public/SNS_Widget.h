@@ -26,7 +26,7 @@ public:
 	struct FSNS_S_SettingsData SettingsData;
 
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
-	void OnReceivedDialogue(const FSNS_S_Speaker& Speaker, const FSNS_S_TimeStamp& TimeStamp);
+	void OnReceivedDialogue(const FSNS_S_Speaker& Speaker, const FSNS_S_TimeStamp& TimeStamp, const bool bCanBeSkipped);
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnCurrentLineEnd();

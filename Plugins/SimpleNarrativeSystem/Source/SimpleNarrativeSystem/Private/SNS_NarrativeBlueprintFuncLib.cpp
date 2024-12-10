@@ -5,10 +5,7 @@
 #include "SNS_NarrativeBlueprintFuncLib.h"
 #include "Structs/SNS_S_Dialogue.h"
 #include "SNS_DialogueWorldSubsystem.h"
-#include "Kismet/GameplayStatics.h"
-#include "Components/RichTextBlock.h"
 #include "SNS_I_Subtitles.h"
-#include "Fonts/FontMeasure.h"
 
 #define LOCTEXT_NAMESPACE "SNS_NameSpace"
 
@@ -33,6 +30,10 @@ USNS_DialogueWorldSubsystem* GetNarrativeSubSystem(UObject* WorldContextObject)
 			return NarrativeSubSystem;
 		}
 	}
+
+#if WITH_EDITOR
+	FMessageLog("PIE").Error(LOCTEXT("NoNarrativeSubSystem", "Not found Narrative World Sub System! Please contact my developer!"));
+#endif
 
 	return nullptr;
 }

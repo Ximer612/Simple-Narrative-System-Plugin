@@ -18,7 +18,7 @@ class SIMPLENARRATIVESYSTEM_API USNS_NarrativeBlueprintFuncLib : public UBluepri
 	
 public:
 
-	UFUNCTION(BlueprintCallable, Category = "Simple Narrative System", meta = (DataTablePin = "DialoguesDataTable", RequiredAssetDataTags = "RowStructure=/Script/SimpleNarrativeSystem.SNS_S_Dialogue", WorldContext = "WorldContextObject"))
+	UFUNCTION(BlueprintCallable, Category = "Simple Narrative System", meta = (DataTablePin = "DialoguesDataTable", WorldContext = "WorldContextObject"))
 	static const FName EnqueueDialogue(UObject* WorldContextObject, const UDataTable* DialoguesDataTable, const FName DialogueRowName, UPARAM(DisplayName = "StopAllOtherDialogues?") const bool bStopAllOtherDialogues);
 
 	UFUNCTION(BlueprintCallable, Category = "Simple Narrative System", meta = (WorldContext = "WorldContextObject"))

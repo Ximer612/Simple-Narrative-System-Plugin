@@ -22,6 +22,8 @@ struct SIMPLENARRATIVESYSTEM_API FSNS_S_Dialogue : public FTableRowBase
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta = (RequiredAssetDataTags = "RowStructure=/Script/SimpleNarrativeSystem.SNS_S_Speaker"))
 	TObjectPtr<UDataTable> SpeakersDataTable;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (DisplayName = "CanBeSkipped?"))
+	bool bCanBeSkipped = false;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TArray<FSNS_S_TimeStamp> TimeStamps;

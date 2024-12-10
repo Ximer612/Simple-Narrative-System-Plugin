@@ -6,11 +6,12 @@
 
 #define LOCTEXT_NAMESPACE "SNS_NameSpace"
 
+#pragma region Inherited methods
+
 USNS_DialogueWorldSubsystem::USNS_DialogueWorldSubsystem()
 {
 
 }
-
 void USNS_DialogueWorldSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 {
 	if (InWorld.IsGameWorld())
@@ -28,7 +29,6 @@ void USNS_DialogueWorldSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 USNS_DialogueWorldSubsystem::~USNS_DialogueWorldSubsystem()
 {
 }
-
 void USNS_DialogueWorldSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
@@ -36,7 +36,6 @@ void USNS_DialogueWorldSubsystem::Initialize(FSubsystemCollectionBase& Collectio
 	bIsTickEnabled = false;
 	bIsPlayingAudio = false;
 }
-
 void USNS_DialogueWorldSubsystem::Deinitialize()
 {
 	Super::Deinitialize();
@@ -49,7 +48,6 @@ void USNS_DialogueWorldSubsystem::Deinitialize()
 	
 	DialoguesToPlay.Empty();
 }
-
 void USNS_DialogueWorldSubsystem::Tick(float DeltaTime)
 {
 	if (bIsTickEnabled)
@@ -86,16 +84,15 @@ void USNS_DialogueWorldSubsystem::Tick(float DeltaTime)
 	}
 
 }
-
 TStatId USNS_DialogueWorldSubsystem::GetStatId() const
 {
 	return StatId;
 }
 
+#pragma endregion
+
 void USNS_DialogueWorldSubsystem::EnqueueDialogue(const FSNS_Dialogue&& InDialogue, const bool bStopAllOtherDialogues)
 {
-	UE_LOG(LogTemp, Error, TEXT("DialoguesToPlay num is %d"), DialoguesToPlay.Num());
-
 	if (bNoSpeakerDataTable || bIsDisabled || DialoguesToPlay.Contains(InDialogue) )
 	{
 		return;
@@ -111,7 +108,8 @@ void USNS_DialogueWorldSubsystem::EnqueueDialogue(const FSNS_Dialogue&& InDialog
 			OnCurrentDialogueEndDelegate.Broadcast(DialoguesToPlay[i].DialogueRowName);
 		}
 
-		OnAllDialoguesEndDelegate.Broadcast(CurrentDialogueRowName);
+		//Not calling this because if the "important" dialogue we skipo the other but not all because we are inside this array too
+		//OnAllDialoguesEndDelegate.Broadcast(CurrentDialogueRowName);
 
 		DialoguesToPlay.Empty();
 		DialoguesToPlay.Add(InDialogue);
@@ -222,7 +220,6 @@ void USNS_DialogueWorldSubsystem::ManageDialogueEnd(bool bShouldRemoveFirst)
 			if (!PerDialogueLambdasOnAllEnd[i].bRepeatable)
 			{
 				OnCurrentDialogueEndDelegate.Remove(PerDialogueLambdasOnAllEnd[i].DelegateHandle);
-				UE_LOG(LogTemp, Error, TEXT("REMOVED HANDLE!"));
 			}
 		}
 	}
@@ -245,7 +242,6 @@ void USNS_DialogueWorldSubsystem::SendDialogue()
 	if (!Speaker)
 	{
 		FMessageLog("PIE").Error(FText::Format(LOCTEXT("SpeakerNotFound", "Speaker '{0}' cannot be found!"), FText::FromName(SpeakerRowName)));
-		UE_LOG(LogTemp, Error, TEXT("SPEAKER %s NOT FOUND!!!!"), *SpeakerRowName.ToString());
 		return;
 	}
 #endif
@@ -254,15 +250,21 @@ void USNS_DialogueWorldSubsystem::SendDialogue()
 
 	if (InGameManager->SubtitlesWidget)
 	{
-		InGameManager->SubtitlesWidget->OnReceivedDialogue(*Speaker, CurrentDialogue->TimeStamps[CurrentDialogueLineIndex]);
+		InGameManager->SubtitlesWidget->OnReceivedDialogue(*Speaker, CurrentDialogue->TimeStamps[CurrentDialogueLineIndex], CurrentDialogue->bCanBeSkipped);
 	}
 }
 
 void USNS_DialogueWorldSubsystem::SkipCurrentLine()
 {
-	//TODO: only if current dialogue can be skipped
+	if (!CurrentDialogue->bCanBeSkipped)
+	{
+		return;
+	}
+
 	DialogueLineRemaningTime = 0;
 	bShouldAdjustAudioTiming = true;
+
+	UE_LOG(LogTemp, Warning, TEXT("SKIPPED LINE!"));
 }
 
 void USNS_DialogueWorldSubsystem::CheckDialogueMapContainsRowName(const FName& DialogueRowName)
@@ -369,7 +371,6 @@ void USNS_DialogueWorldSubsystem::CallDialogueDelegate(FOnDialogueDelegate& InDi
 			if (!PerDialogueLambdas[CurrentDialogueRowName].OnStart[i].bRepeatable)
 			{
 				InDialogueDelegate.Remove(PerDialogueLambdas[InDialogueRowName].OnStart[i].DelegateHandle);
-				UE_LOG(LogTemp, Error, TEXT("REMOVED START HANDLE!"));
 			}
 		}
 	}
@@ -380,7 +381,6 @@ void USNS_DialogueWorldSubsystem::CallDialogueDelegate(FOnDialogueDelegate& InDi
 			if (!PerDialogueLambdas[CurrentDialogueRowName].OnEnd[i].bRepeatable)
 			{
 				InDialogueDelegate.Remove(PerDialogueLambdas[InDialogueRowName].OnEnd[i].DelegateHandle);
-				UE_LOG(LogTemp, Error, TEXT("REMOVED END HANDLE!"));
 			}
 		}
 	}
