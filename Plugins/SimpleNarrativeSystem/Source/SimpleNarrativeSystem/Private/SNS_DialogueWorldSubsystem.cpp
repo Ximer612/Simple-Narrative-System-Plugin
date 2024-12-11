@@ -48,6 +48,7 @@ void USNS_DialogueWorldSubsystem::Deinitialize()
 	
 	DialoguesToPlay.Empty();
 }
+
 void USNS_DialogueWorldSubsystem::Tick(float DeltaTime)
 {
 	if (bIsTickEnabled)
@@ -58,11 +59,14 @@ void USNS_DialogueWorldSubsystem::Tick(float DeltaTime)
 		//if remaning time is over
 		if (DialogueLineRemaningTime < 0)
 		{
-			//if it's not the first subtitle line
+			//it notifies when the previous dialogue is ended
 			if (CurrentDialogueLineIndex != 0 && InGameManager->SubtitlesWidget)
 			{
 				InGameManager->SubtitlesWidget->OnCurrentLineEnd();
 			}
+
+			CurrentDialogueLineIndex++;
+
 			//if there aren't other timestamps
 			if (CurrentDialogueLineIndex >= CurrentDialogue->TimeStamps.Num())
 			{
@@ -70,16 +74,16 @@ void USNS_DialogueWorldSubsystem::Tick(float DeltaTime)
 				return;
 			}
 
-			if (bShouldAdjustAudioTiming && InGameManager->AudioComponent->Sound != nullptr && CurrentDialogueLineIndex > 0)
+
+			if (bShouldAdjustAudioTiming && InGameManager->AudioComponent->Sound != nullptr)
 			{
-				DialogueLineElapsedTime = CurrentDialogue->TimeStamps[CurrentDialogueLineIndex - 1].TimeStamp;
-				InGameManager->AudioComponent->Play(DialogueLineElapsedTime);
 				bShouldAdjustAudioTiming = false;
+				DialogueLineElapsedTime = CurrentDialogue->TimeStamps[CurrentDialogueLineIndex-1].TimeStamp; // -1 because the time elapsed is the duration time of the previous dialogue line
+				InGameManager->AudioComponent->Play(DialogueLineElapsedTime);
 			}
 
 			SendDialogue();
-
-			CurrentDialogueLineIndex++;
+			
 		}
 	}
 
@@ -256,7 +260,7 @@ void USNS_DialogueWorldSubsystem::SendDialogue()
 
 void USNS_DialogueWorldSubsystem::SkipCurrentLine()
 {
-	if (!CurrentDialogue->bCanBeSkipped)
+	if (CurrentDialogue == nullptr || !CurrentDialogue->bCanBeSkipped)
 	{
 		return;
 	}
