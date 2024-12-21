@@ -60,7 +60,7 @@ void USNS_DialogueWorldSubsystem::Tick(float DeltaTime)
 		if (DialogueLineRemaningTime < 0)
 		{
 			//it notifies when the previous dialogue is ended
-			if (CurrentDialogueLineIndex != 0 && InGameManager->SubtitlesWidget)
+			if (/*CurrentDialogueLineIndex != 0 &&*/ InGameManager->SubtitlesWidget)
 			{
 				InGameManager->SubtitlesWidget->OnCurrentLineEnd();
 			}
@@ -82,7 +82,7 @@ void USNS_DialogueWorldSubsystem::Tick(float DeltaTime)
 				InGameManager->AudioComponent->Play(DialogueLineElapsedTime);
 			}
 
-			SendDialogue();
+			SendDialogueToWidget();
 			
 		}
 	}
@@ -106,30 +106,34 @@ void USNS_DialogueWorldSubsystem::EnqueueDialogue(const FSNS_Dialogue&& InDialog
 	{
 		//CALL ALL EVENTS OF THE DIALOGUES TO PLAY
 
-		for (int32 i = 0; i < DialoguesToPlay.Num(); i++)
+		int32 dialoguesToPlayNum = DialoguesToPlay.Num();
+
+		if (dialoguesToPlayNum > 0)
 		{
-			OnCurrentDialogueStartDelegate.Broadcast(DialoguesToPlay[i].DialogueRowName);
-			OnCurrentDialogueEndDelegate.Broadcast(DialoguesToPlay[i].DialogueRowName);
+			for (int32 i = 0; i < dialoguesToPlayNum; i++)
+			{
+				OnCurrentDialogueStartDelegate.Broadcast(DialoguesToPlay[i].DialogueRowName);
+				OnCurrentDialogueEndDelegate.Broadcast(DialoguesToPlay[i].DialogueRowName);
+			}
+
+			DialoguesToPlay.Empty();
+			InGameManager->SubtitlesWidget->StopAllOtherDialogues();
 		}
 
-		//Not calling this because if the "important" dialogue we skipo the other but not all because we are inside this array too
+		//Not calling this because if the "important" dialogue we skip the other but not all because we are inside this array too
 		//OnAllDialoguesEndDelegate.Broadcast(CurrentDialogueRowName);
 
-		DialoguesToPlay.Empty();
 		DialoguesToPlay.Add(InDialogue);
 
 		DialogueLineRemaningTime = 0;
 		ManageDialogueEnd(false);
-
-		InGameManager->SubtitlesWidget->StopAllOtherDialogues();
-
-		SendDialogue();
 	}
 	else
 	{
 		DialoguesToPlay.Add(InDialogue);
 	}
 
+	//SendDialogueToWidget();
 
 	if (!bIsPlayingAudio)
 	{
@@ -179,6 +183,8 @@ void USNS_DialogueWorldSubsystem::PlayDialogue(bool& AllLinesEnded)
 
 	bIsTickEnabled = true;
 	bIsPlayingAudio = true;
+
+	SendDialogueToWidget();
 
 	CallDialogueDelegate(OnCurrentDialogueStartDelegate, CurrentDialogueRowName,true);
 }
@@ -236,7 +242,7 @@ void USNS_DialogueWorldSubsystem::ManageDialogueEnd(bool bShouldRemoveFirst)
 	}
 }
 
-void USNS_DialogueWorldSubsystem::SendDialogue()
+void USNS_DialogueWorldSubsystem::SendDialogueToWidget()
 {
 	const FName& SpeakerRowName = CurrentDialogue->TimeStamps[CurrentDialogueLineIndex].Speaker.RowName;
 

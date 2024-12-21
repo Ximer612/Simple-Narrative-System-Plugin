@@ -11,13 +11,15 @@
 /**
  * 
  */
-UCLASS(Blueprintable, Config = NarrativeSystemSettings)
+UCLASS(Abstract,Blueprintable, Config = NarrativeSystemSettings)
 class SIMPLENARRATIVESYSTEM_API USNS_Widget : public UUserWidget
 {
 	GENERATED_BODY()
 
-private:
+protected:
 	virtual bool Initialize() override;
+
+	//virtual void NativeConstruct() override;
 
 
 public:

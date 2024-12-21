@@ -24,3 +24,8 @@ bool USNS_Widget::Initialize()
 
 	return true;
 }
+
+//void USNS_Widget::NativeConstruct()
+//{
+//	Super::NativeConstruct();
+//}

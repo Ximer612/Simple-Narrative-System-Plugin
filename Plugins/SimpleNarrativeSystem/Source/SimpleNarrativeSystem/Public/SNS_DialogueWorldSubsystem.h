@@ -102,7 +102,7 @@ public:
 private:
 	void PlayDialogue(bool& AllLinesEnded);
 	void ManageDialogueEnd(bool bShouldRemoveFirst = true);
-	void SendDialogue();
+	void SendDialogueToWidget();
 
 	void SkipCurrentLine();
 
