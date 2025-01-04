@@ -272,7 +272,11 @@ void USNS_DialogueWorldSubsystem::SkipCurrentLine()
 	}
 
 	DialogueLineRemaningTime = 0;
-	bShouldAdjustAudioTiming = true;
+
+	if (InGameManager->AudioComponent->Sound != nullptr && DialogueLineElapsedTime < InGameManager->AudioComponent->Sound->GetDuration())
+	{
+		bShouldAdjustAudioTiming = true;
+	}
 }
 
 void USNS_DialogueWorldSubsystem::CheckDialogueMapContainsRowName(const FName& DialogueRowName)
