@@ -1,6 +1,6 @@
 // Copyright 2024, Ximer - Marco Baldini, All rights reserved
 
-#define GET_WORLD_FROM_CONTEXT(World,WorldContextObject) World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
+#define GET_WORLD_FROM_CONTEXT(World,WorldContextObject) World = WorldContextObject->GetWorld();
 
 #include "SNS_NarrativeBlueprintFuncLib.h"
 #include "Structs/SNS_S_Dialogue.h"

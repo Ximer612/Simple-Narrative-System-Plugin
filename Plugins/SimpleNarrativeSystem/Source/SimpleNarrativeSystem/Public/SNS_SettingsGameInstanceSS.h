@@ -6,6 +6,7 @@
 #include "Structs/SNS_S_SettingsData.h"
 #include "SNS_DialogueWorldSubsystem.h"
 #include "SNS_SettingsSaveGame.h"
+#include "Subsystems/GameInstanceSubsystem.h"
 #include "SNS_SettingsGameInstanceSS.generated.h"
 
 DECLARE_DELEGATE(FOnSaveSettings);
@@ -23,13 +24,13 @@ public:
 
 	virtual void Deinitialize() override;
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "SimpleNarrativeSystem")
 	void SaveSettings(const FSNS_S_SettingsData& NewSettings);
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "SimpleNarrativeSystem")
 	FSNS_S_SettingsData& GetSettings();
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "SimpleNarrativeSystem")
 	bool LoadSettings();
 
 	FOnSaveSettings OnSaveSettings;

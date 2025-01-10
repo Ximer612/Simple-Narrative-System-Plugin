@@ -17,15 +17,15 @@ struct SIMPLENARRATIVESYSTEM_API FSNS_S_Dialogue : public FTableRowBase
 {
 	GENERATED_BODY()
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleNarrativeSystem")
 	TSoftObjectPtr<USoundBase> AudioClip;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta = (RequiredAssetDataTags = "RowStructure=/Script/SimpleNarrativeSystem.SNS_S_Speaker"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta = (RequiredAssetDataTags = "RowStructure=/Script/SimpleNarrativeSystem.SNS_S_Speaker"), Category = "SimpleNarrativeSystem")
 	TObjectPtr<UDataTable> SpeakersDataTable;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (DisplayName = "CanBeSkipped?"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (DisplayName = "CanBeSkipped?"), Category = "SimpleNarrativeSystem")
 	bool bCanBeSkipped = false;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleNarrativeSystem")
 	TArray<FSNS_S_TimeStamp> TimeStamps;
 
 	/**

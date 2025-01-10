@@ -24,4 +24,4 @@ void FSimpleNarrativeSystemEditorModule::ShutdownModule()
 
 #undef LOCTEXT_NAMESPACE
 	
-IMPLEMENT_MODULE(FSimpleNarrativeSystemEditorModule, SimpleNarrativeSystem)
+IMPLEMENT_MODULE(FSimpleNarrativeSystemEditorModule, SimpleNarrativeSystemEditor)

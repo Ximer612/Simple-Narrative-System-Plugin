@@ -13,10 +13,10 @@ struct SIMPLENARRATIVESYSTEM_API FSNS_S_Speaker : public FTableRowBase
 {
 	GENERATED_BODY()
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleNarrativeSystem")
     FText SpeakerDisplayedName;
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleNarrativeSystem")
     FLinearColor SpeakerColor = {1.f,1.f,1.f,1.f};
 
 };

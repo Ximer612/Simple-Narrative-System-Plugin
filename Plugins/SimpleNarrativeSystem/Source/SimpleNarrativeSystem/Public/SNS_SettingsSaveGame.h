@@ -17,7 +17,7 @@ class USNS_SettingsSaveGame : public USaveGame
 
 public:
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SimpleNarrativeSystem")
 	FSNS_S_SettingsData SettingsData;
 	
 };

@@ -24,24 +24,24 @@ protected:
 
 public:
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SimpleNarrativeSystem")
 	struct FSNS_S_SettingsData SettingsData;
 
-	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = "SimpleNarrativeSystem")
 	void OnReceivedDialogue(const FSNS_S_Speaker& Speaker, const FSNS_S_TimeStamp& TimeStamp, const bool bCanBeSkipped);
 
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintImplementableEvent, Category = "SimpleNarrativeSystem")
 	void OnCurrentLineEnd();
 
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintImplementableEvent, Category = "SimpleNarrativeSystem")
 	void SetStyleFromSettings();
 
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintImplementableEvent, Category = "SimpleNarrativeSystem")
 	void StopAllOtherDialogues();
 
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintImplementableEvent, Category = "SimpleNarrativeSystem")
 	void OnCurrentDialogueEnd();
 
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintImplementableEvent, Category = "SimpleNarrativeSystem")
 	void OnAllDialoguesEnd();
 };

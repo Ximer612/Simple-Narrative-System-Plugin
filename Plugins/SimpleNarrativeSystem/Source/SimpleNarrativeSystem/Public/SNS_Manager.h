@@ -17,10 +17,10 @@ public:
 	// Sets default values for this actor's properties
 	ASNS_Manager();
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="SimpleNarrativeSystem")
 	TObjectPtr<USNS_Widget> SubtitlesWidget;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SimpleNarrativeSystem")
 	TObjectPtr<UAudioComponent> AudioComponent;
 
 protected:
