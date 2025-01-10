@@ -13,6 +13,7 @@ ASNS_Manager::ASNS_Manager()
 	SubtitlesWidget = CreateDefaultSubobject<USNS_Widget>("SNS_Widget");
 	AudioComponent = CreateDefaultSubobject<UAudioComponent>("SNS_AudioComponent");
 
+	RootComponent = AudioComponent;
 	AudioComponent->bIsUISound = true;
 
 }

@@ -14,17 +14,7 @@ USNS_DialogueWorldSubsystem::USNS_DialogueWorldSubsystem()
 }
 void USNS_DialogueWorldSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 {
-	if (InWorld.IsGameWorld())
-	{
-		UGameInstance* GameInstance = InWorld.GetGameInstance();
 
-		if (!GameInstance)
-		{
-			return;
-		}
-
-		InGameManager = InWorld.SpawnActor<ASNS_Manager>();
-	}
 }
 USNS_DialogueWorldSubsystem::~USNS_DialogueWorldSubsystem()
 {
@@ -35,6 +25,18 @@ void USNS_DialogueWorldSubsystem::Initialize(FSubsystemCollectionBase& Collectio
 
 	bIsTickEnabled = false;
 	bIsPlayingAudio = false;
+
+	if (GetWorld() && GetWorld()->IsGameWorld())
+	{
+		UGameInstance* GameInstance = GetWorld()->GetGameInstance();
+
+		if (!GameInstance)
+		{
+			return;
+		}
+		bTESTVARIABLEREMOVEME = false;
+		InGameManager = GetWorld()->SpawnActor<ASNS_Manager>();
+	}
 }
 void USNS_DialogueWorldSubsystem::Deinitialize()
 {
@@ -244,6 +246,11 @@ void USNS_DialogueWorldSubsystem::ManageDialogueEnd(bool bShouldRemoveFirst)
 
 void USNS_DialogueWorldSubsystem::SendDialogueToWidget()
 {
+	if (bTESTVARIABLEREMOVEME)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("DEVI CHIAMARE PRIMA IL BEGIN PLAY?"));
+	}
+
 	const FName& SpeakerRowName = CurrentDialogue->TimeStamps[CurrentDialogueLineIndex].Speaker.RowName;
 
 	FSNS_S_Speaker* Speaker = CurrentDialogue->TimeStamps[CurrentDialogueLineIndex].Speaker.DataTable->FindRow<FSNS_S_Speaker>(SpeakerRowName, "", true);
@@ -261,6 +268,9 @@ void USNS_DialogueWorldSubsystem::SendDialogueToWidget()
 	if (InGameManager->SubtitlesWidget)
 	{
 		InGameManager->SubtitlesWidget->OnReceivedDialogue(*Speaker, CurrentDialogue->TimeStamps[CurrentDialogueLineIndex], CurrentDialogue->bCanBeSkipped);
+	}
+	else {
+		UE_LOG(LogTemp,Error,TEXT("Subtitle Widget cannot be found! Please contact the developer"))
 	}
 }
 
