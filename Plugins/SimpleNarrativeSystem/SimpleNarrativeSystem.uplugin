@@ -3,13 +3,13 @@
 	"Version": 1,
 	"VersionName": "1.0",
 	"FriendlyName": "SimpleNarrativeSystem",
-	"Description": "Simple narrative system",
-	"Category": "Other",
+	"Description": "Simple narrative system made by Ximer",
+	"Category": "Dialogue System",
 	"CreatedBy": "Ximer - Marco Baldini",
 	"CreatedByURL": "https://marcobaldini.pages.dev/",
-	"DocsURL": "",
+	"DocsURL": "https://marcobaldini.pages.dev/simplenarrativesystem.html",
 	"MarketplaceURL": "",
-	"SupportURL": "",
+	"SupportURL": "baldinimarco2002@gmail.com",
 	"CanContainContent": true,
 	"IsBetaVersion": false,
 	"IsExperimentalVersion": false,
@@ -28,6 +28,11 @@
 			"Type": "Editor",
 			"LoadingPhase": "PostEngineInit"
 		}
-		
+	],
+	"Plugins": [
+		{
+			"Name": "GameplayStateTree",
+			"Enabled": true
+		}
 	]
 }

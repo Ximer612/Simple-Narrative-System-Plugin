@@ -71,3 +71,26 @@ bool USNS_SettingsGameInstanceSS::LoadSettings()
 
 	return false;
 }
+
+bool USNS_SettingsGameInstanceSS::Exec(UWorld* InWorld, const TCHAR* Cmd, FOutputDevice& Ar)
+{
+	if (FParse::Command(&Cmd, TEXT("deletesns")))
+	{
+		DeleteSavedSettings();
+		return true;
+	}
+	return false;
+}
+
+void USNS_SettingsGameInstanceSS::DeleteSavedSettings(bool bOnlyInEditor)
+{
+	if (!bOnlyInEditor)
+	{
+		UGameplayStatics::DeleteGameInSlot(SettingsSlotName, 0);
+	}
+
+#if WITH_EDITOR
+	UGameplayStatics::DeleteGameInSlot(SettingsSlotName, 0);
+#endif
+	UE_LOG(LogTemp, Warning, TEXT("DELETED SAVED SNS WIDGET SETTINGS!") );
+}

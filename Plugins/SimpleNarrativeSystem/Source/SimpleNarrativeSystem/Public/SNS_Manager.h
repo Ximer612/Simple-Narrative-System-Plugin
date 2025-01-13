@@ -23,6 +23,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SimpleNarrativeSystem")
 	TObjectPtr<UAudioComponent> AudioComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "SimpleNarrativeSystem")
+	bool bHasValidWidget = true;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

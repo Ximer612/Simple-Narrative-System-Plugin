@@ -23,8 +23,16 @@ void ASNS_Manager::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	FSoftClassPath MyWidgetClassRef(TEXT("/SimpleNarrativeSystem/UserInterface/WBP_Subtitles.WBP_Subtitles_C"));
+	FSoftClassPath MyWidgetClassRef(TEXT("/SimpleNarrativeSystem/UserInterface/WBP_SNS_Subtitles.WBP_SNS_Subtitles_C"));
 	TSubclassOf<USNS_Widget> SubtitlesWidgetClass = MyWidgetClassRef.TryLoadClass<USNS_Widget>();
+
+	if (MyWidgetClassRef.IsNull() || SubtitlesWidgetClass == nullptr)
+	{
+		FMessageLog("PIE").Error(FText::FromString(TEXT("Can't find Subtitle Widget, please restore it inside '/SimpleNarrativeSystem/UserInterface/' named 'WBP_SNS_Subtitles'.")));
+		bHasValidWidget = false;
+		return;
+	}
+
 	SubtitlesWidget = Cast<USNS_Widget>(CreateWidget(GetWorld()->GetFirstPlayerController(), SubtitlesWidgetClass));
 	SubtitlesWidget->AddToViewport(612);
 

@@ -15,7 +15,7 @@ DECLARE_DELEGATE(FOnSaveSettings);
  * 
  */
 UCLASS()
-class SIMPLENARRATIVESYSTEM_API USNS_SettingsGameInstanceSS : public UGameInstanceSubsystem
+class SIMPLENARRATIVESYSTEM_API USNS_SettingsGameInstanceSS : public UGameInstanceSubsystem, public FSelfRegisteringExec
 {
 	GENERATED_BODY()
 
@@ -32,8 +32,12 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "SimpleNarrativeSystem")
 	bool LoadSettings();
+	UFUNCTION(BlueprintCallable, Category = "SimpleNarrativeSystem")
+	void DeleteSavedSettings(UPARAM(DisplayName ="OnlyInEditor?") bool bOnlyInEditor = false);
 
 	FOnSaveSettings OnSaveSettings;
+
+	virtual bool Exec(UWorld* InWorld, const TCHAR* Cmd, FOutputDevice& Ar) override;
 
 private:
 	UPROPERTY()

@@ -14,7 +14,6 @@ USNS_DialogueWorldSubsystem::USNS_DialogueWorldSubsystem()
 }
 void USNS_DialogueWorldSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 {
-
 }
 USNS_DialogueWorldSubsystem::~USNS_DialogueWorldSubsystem()
 {
@@ -99,7 +98,7 @@ TStatId USNS_DialogueWorldSubsystem::GetStatId() const
 
 void USNS_DialogueWorldSubsystem::EnqueueDialogue(const FSNS_Dialogue&& InDialogue, const bool bStopAllOtherDialogues)
 {
-	if (bNoSpeakerDataTable || bIsDisabled || DialoguesToPlay.Contains(InDialogue) )
+	if (bNoSpeakerDataTable || bIsDisabled || DialoguesToPlay.Contains(InDialogue) || !InGameManager->bHasValidWidget)
 	{
 		return;
 	}

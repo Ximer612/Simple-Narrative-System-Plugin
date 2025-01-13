@@ -24,7 +24,7 @@ protected:
 
 public:
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SimpleNarrativeSystem")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SimpleNarrativeSystem")
 	struct FSNS_S_SettingsData SettingsData;
 
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = "SimpleNarrativeSystem")
