@@ -76,11 +76,15 @@ void USNS_DialogueWorldSubsystem::Tick(float DeltaTime)
 			}
 
 
-			if (bShouldAdjustAudioTiming && InGameManager->AudioComponent->Sound != nullptr)
+			if (bShouldAdjustAudioTiming)
 			{
 				bShouldAdjustAudioTiming = false;
 				DialogueLineElapsedTime = CurrentDialogue->TimeStamps[CurrentDialogueLineIndex-1].TimeStamp; // -1 because the time elapsed is the duration time of the previous dialogue line
-				InGameManager->AudioComponent->Play(DialogueLineElapsedTime);
+				
+				if (InGameManager->AudioComponent->Sound != nullptr)
+				{
+					InGameManager->AudioComponent->Play(DialogueLineElapsedTime);
+				}
 			}
 
 			SendDialogueToWidget();
@@ -282,7 +286,7 @@ void USNS_DialogueWorldSubsystem::SkipCurrentLine()
 
 	DialogueLineRemaningTime = 0;
 
-	if (InGameManager->AudioComponent->Sound != nullptr && DialogueLineElapsedTime < InGameManager->AudioComponent->Sound->GetDuration())
+	if (InGameManager->AudioComponent->Sound == nullptr || DialogueLineElapsedTime < InGameManager->AudioComponent->Sound->GetDuration() )
 	{
 		bShouldAdjustAudioTiming = true;
 	}

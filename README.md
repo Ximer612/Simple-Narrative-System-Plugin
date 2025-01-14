@@ -78,7 +78,7 @@ DONE: Change dialogue default text color
 DONE: Fade in/out ON/OFF
 DONE: Stack dialogue on top of each other (current max two)
 DONE: Don't do the stack animation to the last dialogue
-DONE: Add rich text (maybe will be removed)
+DONE: Add rich text
 DONE: You can't add two identical dialogues if they are already in queue/playing
 DONE: Button for skip current line working with audio
 DONE: Customizable text separator between speaker's name and text
@@ -87,9 +87,12 @@ DONE: Add custom effects for rich text with tags: <wave>, <rainbow>
 DONE: Add dialogues event system (OnStart,OnEnd,OnAllEnd)
 
 TO-DO: Increase dialogue stack-on-each-other dialogue number
-TO-DO: Add custom duration to fade-out
-TO-DO: Change font to every font easily (cannot be done with rich text)
-TO-DO: Change text size and border (cannot be done with rich text)
+TO-DO: Add custom per-dialogue-line fade-out duration
+TO-DO: Audio and dialogue stops and continues with a button press (Like a visual novel)
+TO-DO: Multithreading
+TO-DO: Network replication
+TO-DO: More text effects
+TO-DO: Move more Widget Blueprint logic to C++
 
-TO-DO: Audio and dialogue stops and continues with a button press
+DISCARDED: Customizable text font,size and border (cannot be done with rich text)
 ```
