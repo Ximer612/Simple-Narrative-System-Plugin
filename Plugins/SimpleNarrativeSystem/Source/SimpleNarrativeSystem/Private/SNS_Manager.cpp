@@ -3,6 +3,9 @@
 
 #include "SNS_Manager.h"
 #include "SNS_Widget.h"
+#include "SNS_CustomProjectSettings.h"
+#define GET_SETTINGS GetDefault<USNS_CustomProjectSettings>()
+
 
 // Sets default values
 ASNS_Manager::ASNS_Manager()
@@ -23,12 +26,12 @@ void ASNS_Manager::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	FSoftClassPath MyWidgetClassRef(TEXT("/SimpleNarrativeSystem/UserInterface/WBP_SNS_Subtitles.WBP_SNS_Subtitles_C"));
+	FSoftClassPath MyWidgetClassRef(GET_SETTINGS->DialogueWidgetBlueprint);
 	TSubclassOf<USNS_Widget> SubtitlesWidgetClass = MyWidgetClassRef.TryLoadClass<USNS_Widget>();
 
 	if (MyWidgetClassRef.IsNull() || SubtitlesWidgetClass == nullptr)
 	{
-		FMessageLog("PIE").Error(FText::FromString(TEXT("Can't find Subtitle Widget, please restore it inside '/SimpleNarrativeSystem/UserInterface/' named 'WBP_SNS_Subtitles'.")));
+		FMessageLog("PIE").Error(FText::FromString(TEXT("Can't find a Subtitle Widget, please set it inside 'Project Settings/Plugins/Simple Narrative System/Subtitles Widget'.")));
 		bHasValidWidget = false;
 		return;
 	}

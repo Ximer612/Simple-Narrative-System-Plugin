@@ -12,4 +12,8 @@ public:
 	/** IModuleInterface implementation */
 	virtual void StartupModule() override;
 	virtual void ShutdownModule() override;
+
+	/** Editor Settings **/
+	void RegisterSettings();
+	void UnRegisterSettings();
 };
