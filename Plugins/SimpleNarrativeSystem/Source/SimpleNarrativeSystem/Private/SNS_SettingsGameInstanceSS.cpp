@@ -3,6 +3,8 @@
 #include "SNS_SettingsGameInstanceSS.h"
 #include "Kismet/GameplayStatics.h"
 
+DEFINE_LOG_CATEGORY(LogSNS);
+
 void USNS_SettingsGameInstanceSS::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
@@ -92,5 +94,5 @@ void USNS_SettingsGameInstanceSS::DeleteSavedSettings(bool bOnlyInEditor)
 #if WITH_EDITOR
 	UGameplayStatics::DeleteGameInSlot(SettingsSlotName, 0);
 #endif
-	UE_LOG(LogTemp, Warning, TEXT("DELETED SAVED SNS WIDGET SETTINGS!") );
+	UE_LOG(LogSNS, Warning, TEXT("DELETED SAVED SNS WIDGET SETTINGS!") );
 }

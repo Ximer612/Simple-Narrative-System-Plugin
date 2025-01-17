@@ -9,6 +9,7 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "SNS_SettingsGameInstanceSS.generated.h"
 
+DECLARE_LOG_CATEGORY_EXTERN(LogSNS, Log, All);
 DECLARE_DELEGATE(FOnSaveSettings);
 
 /**

@@ -59,8 +59,6 @@ class SIMPLENARRATIVESYSTEM_API USNS_DialogueWorldSubsystem : public UTickableWo
 
 private:
 
-	bool bTESTVARIABLEREMOVEME = true;
-
 	// FTickableGameObject StatId
 	TStatId StatId;
 
