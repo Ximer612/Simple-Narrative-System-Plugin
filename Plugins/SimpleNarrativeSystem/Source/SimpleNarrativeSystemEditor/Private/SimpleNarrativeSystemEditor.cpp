@@ -1,6 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "SimpleNarrativeSystemEditor.h"
+#include "PropertyEditorModule.h"
 #include "SNS_DataTableCustomization.h"
 
 #define LOCTEXT_NAMESPACE "FSimpleNarrativeSystemEditorModule"
