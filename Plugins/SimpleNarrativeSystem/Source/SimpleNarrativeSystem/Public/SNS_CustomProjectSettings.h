@@ -9,6 +9,7 @@
 #endif
 
 #include "UObject/SoftObjectPath.h"
+#include "SNS_Widget.h"
 #include "SNS_CustomProjectSettings.generated.h"
 
 /**
@@ -24,7 +25,7 @@ public:
 	USNS_CustomProjectSettings(const FObjectInitializer& ObjectInitializer);
 
 	UPROPERTY(config, EditAnywhere, BlueprintReadWrite, Category = "Widget Settings", meta = (DisplayName = "Subtitles Widget"))
-	TSubclassOf<class USNS_Widget> DialogueWidgetBlueprint;
+	TSubclassOf<USNS_Widget> DialogueWidgetBlueprint;
 
 	UPROPERTY(config, VisibleDefaultsOnly, Category = "Info", meta = (DisplayName = "Made by"))
 	FString PluginInfo;
