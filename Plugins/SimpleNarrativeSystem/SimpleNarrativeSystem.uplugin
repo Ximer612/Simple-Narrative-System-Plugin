@@ -4,10 +4,10 @@
 	"VersionName": "1.0",
 	"FriendlyName": "SimpleNarrativeSystem",
 	"Description": "Simple narrative system made by Ximer",
-	"Category": "Dialogue System",
+	"Category": "Other",
 	"CreatedBy": "Ximer - Marco Baldini",
 	"CreatedByURL": "https://marcobaldini.pages.dev/",
-	"DocsURL": "https://marcobaldini.pages.dev/simplenarrativesystem.html",
+	"DocsURL": "https://marcobaldini.pages.dev/simplenarrativesystem",
 	"MarketplaceURL": "",
 	"SupportURL": "baldinimarco2002@gmail.com",
 	"CanContainContent": true,
@@ -18,15 +18,12 @@
 		{
 			"Name": "SimpleNarrativeSystem",
 			"Type": "Runtime",
-			"LoadingPhase": "PreDefault",
-			"PlatformAllowList": [
-				"Win64"
-			]
+			"LoadingPhase": "PreLoadingScreen"
 		},
 		{
 			"Name": "SimpleNarrativeSystemEditor",
 			"Type": "Editor",
 			"LoadingPhase": "PostEngineInit"
 		}
-	],
+	]
 }

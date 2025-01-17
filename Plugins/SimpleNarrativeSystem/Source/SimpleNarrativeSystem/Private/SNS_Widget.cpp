@@ -2,6 +2,7 @@
 
 
 #include "SNS_Widget.h"
+#include "Engine/GameInstance.h"
 #include "SNS_SettingsGameInstanceSS.h"
 
 bool USNS_Widget::Initialize()
