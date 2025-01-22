@@ -3,12 +3,12 @@
 	"Version": 1,
 	"VersionName": "1.0",
 	"FriendlyName": "SimpleNarrativeSystem",
-	"Description": "Simple narrative system made by Ximer",
+	"Description": "Simple Narrative System made by Ximer",
 	"Category": "Other",
 	"CreatedBy": "Ximer - Marco Baldini",
 	"CreatedByURL": "https://marcobaldini.pages.dev/",
 	"DocsURL": "https://marcobaldini.pages.dev/simplenarrativesystem",
-	"MarketplaceURL": "",
+	"FabURL": "com.epicgames.launcher://ue/Fab/92326d43-f882-4552-8a99- a3ccc115fc0a/",
 	"SupportURL": "baldinimarco2002@gmail.com",
 	"CanContainContent": true,
 	"IsBetaVersion": false,
@@ -18,12 +18,14 @@
 		{
 			"Name": "SimpleNarrativeSystem",
 			"Type": "Runtime",
-			"LoadingPhase": "PreLoadingScreen"
+			"LoadingPhase": "PreLoadingScreen",
+			"PlatformAllowList": [ "Win64", "Linux", "Mac" ]
 		},
 		{
 			"Name": "SimpleNarrativeSystemEditor",
 			"Type": "Editor",
-			"LoadingPhase": "PostEngineInit"
+			"LoadingPhase": "PostEngineInit",
+			"PlatformAllowList": [ "Win64", "Linux", "Mac" ]
 		}
 	]
 }
