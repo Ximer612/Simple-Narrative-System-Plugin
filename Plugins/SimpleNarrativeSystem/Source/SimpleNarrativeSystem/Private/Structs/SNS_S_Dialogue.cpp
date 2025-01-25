@@ -1,3 +1,5 @@
+// Copyright 2024, Ximer - Marco Baldini, All rights reserved
+
 #include "Structs/SNS_S_Dialogue.h"
 
 void FSNS_S_Dialogue::OnDataTableChanged(const UDataTable* InDataTable, const FName InRowName)
