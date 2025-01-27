@@ -63,7 +63,6 @@ private:
 	TStatId StatId;
 
 	bool bIsDisabled;
-	bool bNoSpeakerDataTable;
 	bool bIsTickEnabled;
 	bool bIsPlayingAudio;
 	bool bShouldAdjustAudioTiming;

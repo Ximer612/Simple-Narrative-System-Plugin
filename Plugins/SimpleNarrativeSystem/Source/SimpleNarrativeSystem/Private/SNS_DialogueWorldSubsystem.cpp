@@ -100,7 +100,7 @@ TStatId USNS_DialogueWorldSubsystem::GetStatId() const
 
 void USNS_DialogueWorldSubsystem::EnqueueDialogue(const FSNS_Dialogue&& InDialogue, const bool bStopAllOtherDialogues)
 {
-	if (bNoSpeakerDataTable || bIsDisabled || DialoguesToPlay.Contains(InDialogue) || !InGameManager->bHasValidWidget)
+	if (bIsDisabled || DialoguesToPlay.Contains(InDialogue) || !InGameManager->bHasValidWidget)
 	{
 		return;
 	}
@@ -163,6 +163,18 @@ void USNS_DialogueWorldSubsystem::PlayDialogue(bool& AllLinesEnded)
 	if (!TempDialogue)
 	{
 		FMessageLog("PIE").Error(FText::Format(LOCTEXT("NotFoundRow", "Dialogue row name '{0}' cannot be found!"), FText::FromName(DialoguesToPlay[0].DialogueRowName)));
+		return;
+	}
+
+	if (!TempDialogue->SpeakersDataTable)
+	{
+		FMessageLog("PIE").Error(FText::Format(LOCTEXT("NotFoundSpeakersDataTable", "Speakers Data Table cannot be found inside '{0}'!"), FText::FromName(DialoguesToPlay[0].DialogueRowName)));
+		return;
+	}
+
+	if (TempDialogue->TimeStamps.Num() < 1)
+	{
+		FMessageLog("PIE").Error(FText::Format(LOCTEXT("NoTimeStamps", "Cannot found any TimeStamps inside '{0}'!"), FText::FromName(DialoguesToPlay[0].DialogueRowName)));
 		return;
 	}
 #endif
