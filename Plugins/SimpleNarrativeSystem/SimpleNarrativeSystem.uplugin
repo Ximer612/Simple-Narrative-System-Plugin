@@ -10,6 +10,7 @@
 	"DocsURL": "https://marcobaldini.pages.dev/simplenarrativesystem",
 	"FabURL": "com.epicgames.launcher://ue/Fab/product/92326d43-f882-4552-8a99-a3ccc115fc0a",
 	"SupportURL": "baldinimarco2002@gmail.com",
+	"EngineVersion": "5.5.0",
 	"CanContainContent": true,
 	"IsBetaVersion": false,
 	"IsExperimentalVersion": false,
