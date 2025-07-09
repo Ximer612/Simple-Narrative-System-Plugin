@@ -64,6 +64,7 @@ void USNS_DialogueWorldSubsystem::Tick(float DeltaTime)
 				InGameManager->SubtitlesWidget->OnCurrentLineEnd();
 			}
 
+			ManageDialogueIndexDelegate();
 			CurrentDialogueLineIndex++;
 
 			//if there aren't other timestamps
@@ -98,11 +99,11 @@ TStatId USNS_DialogueWorldSubsystem::GetStatId() const
 
 #pragma endregion
 
-void USNS_DialogueWorldSubsystem::EnqueueDialogue(const FSNS_Dialogue&& InDialogue, const bool bStopAllOtherDialogues)
+bool USNS_DialogueWorldSubsystem::EnqueueDialogue(const FSNS_Dialogue&& InDialogue, const bool bStopAllOtherDialogues)
 {
 	if (bIsDisabled || DialoguesToPlay.Contains(InDialogue) || !InGameManager->bHasValidWidget)
 	{
-		return;
+		return false;
 	}
 
 	if (bStopAllOtherDialogues)
@@ -143,6 +144,8 @@ void USNS_DialogueWorldSubsystem::EnqueueDialogue(const FSNS_Dialogue&& InDialog
 		bool AllLinesEnded;
 		PlayDialogue(AllLinesEnded);
 	}
+
+	return true;
 }
 
 void USNS_DialogueWorldSubsystem::PlayDialogue(bool& AllLinesEnded)
@@ -204,6 +207,24 @@ void USNS_DialogueWorldSubsystem::PlayDialogue(bool& AllLinesEnded)
 	SendDialogueToWidget();
 
 	CallDialogueDelegate(OnCurrentDialogueStartDelegate, CurrentDialogueRowName,true);
+}
+
+void USNS_DialogueWorldSubsystem::ManageDialogueIndexDelegate()
+{
+	OnCurrentDialogueIndexDelegate.Broadcast(CurrentDialogueRowName, CurrentDialogueLineIndex);
+
+	if (!PerDialogueLambdas.Contains(CurrentDialogueRowName))
+	{
+		return;
+	}
+
+	for (int32 i = 0; i < PerDialogueLambdas[CurrentDialogueRowName].OnIndex.Num(); i++)
+	{
+		if (!PerDialogueLambdas[CurrentDialogueRowName].OnIndex[i].bRepeatable)
+		{
+			OnCurrentDialogueIndexDelegate.Remove(PerDialogueLambdas[CurrentDialogueRowName].OnIndex[i].DelegateHandle);
+		}
+	}
 }
 
 void USNS_DialogueWorldSubsystem::ManageDialogueEnd(bool bShouldRemoveFirst)
@@ -354,6 +375,25 @@ void USNS_DialogueWorldSubsystem::AddOnCurrentDialogueStart(const FName& Dialogu
 	DialogueLambda.DelegateHandle = LambdaHandle;
 
 	PerDialogueLambdas[DialogueRowName].OnStart.Add(DialogueLambda); // move? unique?
+}
+
+void USNS_DialogueWorldSubsystem::AddOnDialogueIndex(const FName& DialogueRowName, const bool bRepeatable, const int32 DialogueRowIndex, const FRegisteredDelegate& OnDialogueStart)
+{
+	CheckDialogueMapContainsRowName(DialogueRowName);
+
+	FDelegateHandle LambdaHandle = OnCurrentDialogueIndexDelegate.AddLambda(
+		[DialogueRowName, DialogueRowIndex, OnDialogueStart](FName DialogueName, int32 DialogueIndex) {
+			if (DialogueName == DialogueRowName && DialogueRowIndex == DialogueIndex)
+			{
+				OnDialogueStart.ExecuteIfBound();
+			}
+		});
+
+	FDialogueLambda DialogueLambda;
+	DialogueLambda.bRepeatable = bRepeatable;
+	DialogueLambda.DelegateHandle = LambdaHandle;
+
+	PerDialogueLambdas[DialogueRowName].OnIndex.Add(DialogueLambda); // move? unique?
 }
 
 void USNS_DialogueWorldSubsystem::AddOnAllCurrentDialogueEnd(const bool bRepeatable, const FRegisteredDelegate& OnAllDialogueEnd)

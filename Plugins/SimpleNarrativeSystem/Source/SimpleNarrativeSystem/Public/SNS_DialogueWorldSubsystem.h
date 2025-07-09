@@ -40,9 +40,11 @@ struct FDialogueEventsLambdas
 {
 	TArray<FDialogueLambda> OnStart;
 	TArray<FDialogueLambda> OnEnd;
+	TArray<FDialogueLambda> OnIndex;
 };
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnDialogueDelegate, FName);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnDialogueIndexDelegate, FName, uint32);
 
 /**
  * 
@@ -81,6 +83,7 @@ private:
 
 	FOnDialogueDelegate OnCurrentDialogueEndDelegate;
 	FOnDialogueDelegate OnCurrentDialogueStartDelegate;
+	FOnDialogueIndexDelegate OnCurrentDialogueIndexDelegate;
 	FOnDialogueDelegate OnAllDialoguesEndDelegate;
 
 public:
@@ -96,10 +99,11 @@ public:
 
 	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
 
-	void EnqueueDialogue(const FSNS_Dialogue&& InDialogue, const bool bStopAllOtherDialogues);
+	bool EnqueueDialogue(const FSNS_Dialogue&& InDialogue, const bool bStopAllOtherDialogues);
 
 private:
 	void PlayDialogue(bool& AllLinesEnded);
+	void ManageDialogueIndexDelegate();
 	void ManageDialogueEnd(bool bShouldRemoveFirst = true);
 	void SendDialogueToWidget();
 
@@ -109,6 +113,7 @@ private:
 
 	void AddOnCurrentDialogueEnd(const FName& DialogueRowName, const bool bRepeatable, const FRegisteredDelegate& OnDialogueEnd);
 	void AddOnCurrentDialogueStart(const FName& DialogueRowName, const bool bRepeatable, const FRegisteredDelegate& OnDialogueStart);
+	void AddOnDialogueIndex(const FName& DialogueRowName, const bool bRepeatable, const int32 DialogueRowIndex, const FRegisteredDelegate& OnDialogueStart);
 	void AddOnAllCurrentDialogueEnd(const bool bRepeatable, const FRegisteredDelegate& OnAllDialogueEnd);
 	void ClearTMap();
 

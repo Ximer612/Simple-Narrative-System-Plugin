@@ -19,7 +19,7 @@ class SIMPLENARRATIVESYSTEM_API USNS_NarrativeBlueprintFuncLib : public UBluepri
 public:
 
 	UFUNCTION(BlueprintCallable, Category = "Simple Narrative System", meta = (DataTablePin = "DialoguesDataTable", WorldContext = "WorldContextObject"))
-	static const FName EnqueueDialogue(UObject* WorldContextObject, const UDataTable* DialoguesDataTable, const FName DialogueRowName, UPARAM(DisplayName = "StopAllOtherDialogues?") const bool bStopAllOtherDialogues);
+	static const FName EnqueueDialogue(UObject* WorldContextObject, const UDataTable* DialoguesDataTable, const FName DialogueRowName, UPARAM(DisplayName = "StopAllOtherDialogues?") const bool bStopAllOtherDialogues, UPARAM(DisplayName = "IsValid?") bool& bIsValid);
 
 	UFUNCTION(BlueprintCallable, Category = "Simple Narrative System", meta = (WorldContext = "WorldContextObject"))
 	static void SkipCurrentDialogueLine(UObject* WorldContextObject);
@@ -30,6 +30,8 @@ public:
 	static void RegisterEventOnStartDialogue(UObject* WorldContextObject, const FName DialogueRowName, const bool bRepeatable, const FRegisteredDelegate& OnDialogueStart);
 	UFUNCTION(BlueprintCallable, Category = "Simple Narrative System", meta = (WorldContext = "WorldContextObject"))
 	static void RegisterEventOnAllDialogueEnd(UObject* WorldContextObject, const bool bRepeatable, const FRegisteredDelegate& OnAllDialoguesEnd);
+	UFUNCTION(BlueprintCallable, Category = "Simple Narrative System", meta = (WorldContext = "WorldContextObject"))
+	static void RegisterEventOnDialogueIndex(UObject* WorldContextObject, const FName DialogueRowName, const int32 DialogueRowIndex, const bool bRepeatable, const FRegisteredDelegate& OnDialogueIndex);
 
 
 };

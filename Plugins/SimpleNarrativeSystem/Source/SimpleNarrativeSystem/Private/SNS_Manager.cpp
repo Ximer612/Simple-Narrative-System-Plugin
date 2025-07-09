@@ -17,7 +17,7 @@ ASNS_Manager::ASNS_Manager()
 	AudioComponent = CreateDefaultSubobject<UAudioComponent>("SNS_AudioComponent");
 
 	RootComponent = AudioComponent;
-	AudioComponent->bIsUISound = true;
+	AudioComponent->bIsUISound = false;
 
 }
 
