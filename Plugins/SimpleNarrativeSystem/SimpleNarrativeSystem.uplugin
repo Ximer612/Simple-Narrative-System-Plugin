@@ -1,7 +1,7 @@
 {
 	"FileVersion": 3,
-	"Version": 1,
-	"VersionName": "1.0",
+	"Version": 2,
+	"VersionName": "2.0",
 	"FriendlyName": "SimpleNarrativeSystem",
 	"Description": "Simple Narrative System made by Ximer",
 	"Category": "Other",
@@ -20,13 +20,21 @@
 			"Name": "SimpleNarrativeSystem",
 			"Type": "Runtime",
 			"LoadingPhase": "PreLoadingScreen",
-			"PlatformAllowList": [ "Win64", "Linux", "Mac" ]
+			"PlatformAllowList": [
+				"Win64",
+				"Linux",
+				"Mac"
+			]
 		},
 		{
 			"Name": "SimpleNarrativeSystemEditor",
 			"Type": "Editor",
 			"LoadingPhase": "PostEngineInit",
-			"PlatformAllowList": [ "Win64", "Linux", "Mac" ]
+			"PlatformAllowList": [
+				"Win64",
+				"Linux",
+				"Mac"
+			]
 		}
 	]
 }

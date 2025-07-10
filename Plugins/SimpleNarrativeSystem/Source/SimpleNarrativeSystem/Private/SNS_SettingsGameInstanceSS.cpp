@@ -94,5 +94,5 @@ void USNS_SettingsGameInstanceSS::DeleteSavedSettings(bool bOnlyInEditor)
 #if WITH_EDITOR
 	UGameplayStatics::DeleteGameInSlot(SettingsSlotName, 0);
 #endif
-	UE_LOG(LogSNS, Warning, TEXT("DELETED SAVED SNS WIDGET SETTINGS!") );
+	UE_LOG(LogSNS, Log, TEXT("Deleted saved simple narrative system widget settings!") );
 }

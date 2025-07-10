@@ -6,6 +6,10 @@
 #include "Structs/SNS_S_Dialogue.h"
 #include "SNS_DialogueWorldSubsystem.h"
 
+#if WITH_EDITOR
+	#include "SNS_CustomProjectSettings.h"
+#endif // WITH_EDITOR
+
 #define LOCTEXT_NAMESPACE "SNS_NameSpace"
 
 USNS_DialogueWorldSubsystem* GetNarrativeSubSystem(UObject* WorldContextObject)
@@ -50,7 +54,10 @@ const FName USNS_NarrativeBlueprintFuncLib::EnqueueDialogue(UObject* WorldContex
 
 	if (DialogueRowName == TEXT("") || DialogueRowName == TEXT("None"))
 	{
-		FMessageLog("PIE").Warning(LOCTEXT("InvalidRow", "Dialogue row name is None or null!"));
+		bool settingsShowWarning = GetDefault<USNS_CustomProjectSettings>()->bShouldWarningOnNullOrNoneDialogueRowName;
+		if(settingsShowWarning)
+			FMessageLog("PIE").Warning(LOCTEXT("InvalidRow", "Dialogue row name is None or null!"));
+
 		bIsValid = false;
 		return "";
 	}
@@ -61,6 +68,8 @@ const FName USNS_NarrativeBlueprintFuncLib::EnqueueDialogue(UObject* WorldContex
 		bIsValid = false;
 		return "";
 	}
+
+
 #endif
 
 	bIsValid = GetNarrativeSubSystem(WorldContextObject)->EnqueueDialogue({ DialogueRowName ,DialoguesDataTable }, bStopAllOtherDialogues);
@@ -91,4 +100,14 @@ void USNS_NarrativeBlueprintFuncLib::RegisterEventOnAllDialogueEnd(UObject* Worl
 void USNS_NarrativeBlueprintFuncLib::RegisterEventOnDialogueIndex(UObject* WorldContextObject, const FName DialogueRowName, const int32 DialogueRowIndex, const bool bRepeatable, const FRegisteredDelegate& OnDialogueIndex)
 {
 	GetNarrativeSubSystem(WorldContextObject)->AddOnDialogueIndex(DialogueRowName, bRepeatable, DialogueRowIndex, OnDialogueIndex);
+}
+
+void USNS_NarrativeBlueprintFuncLib::PauseCurrentDialogue(UObject* WorldContextObject)
+{
+	GetNarrativeSubSystem(WorldContextObject)->PauseCurrentDialogue();
+}
+
+void USNS_NarrativeBlueprintFuncLib::ResumeCurrentDialogue(UObject* WorldContextObject)
+{
+	GetNarrativeSubSystem(WorldContextObject)->ResumeCurrentDialogue();
 }

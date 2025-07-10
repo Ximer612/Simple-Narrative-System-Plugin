@@ -118,6 +118,9 @@ private:
 	void ClearTMap();
 
 	void CallDialogueDelegate(FOnDialogueDelegate& InDialogueDelegate, const FName& InDialogueRowName, const bool bOnStart);
-	
+
+	void PauseCurrentDialogue();
+	void ResumeCurrentDialogue();
+
 	friend USNS_NarrativeBlueprintFuncLib;
 };

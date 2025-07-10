@@ -50,45 +50,45 @@ void USNS_DialogueWorldSubsystem::Deinitialize()
 
 void USNS_DialogueWorldSubsystem::Tick(float DeltaTime)
 {
-	if (bIsTickEnabled)
+	if (!bIsTickEnabled)
+		return;
+
+	DialogueLineElapsedTime += DeltaTime;
+	DialogueLineRemaningTime -= DeltaTime;
+
+	//if remaning time is over
+	if (DialogueLineRemaningTime < 0)
 	{
-		DialogueLineElapsedTime += DeltaTime;
-		DialogueLineRemaningTime -= DeltaTime;
-
-		//if remaning time is over
-		if (DialogueLineRemaningTime < 0)
+		//it notifies when the previous dialogue is ended
+		if (/*CurrentDialogueLineIndex != 0 &&*/ InGameManager->SubtitlesWidget)
 		{
-			//it notifies when the previous dialogue is ended
-			if (/*CurrentDialogueLineIndex != 0 &&*/ InGameManager->SubtitlesWidget)
-			{
-				InGameManager->SubtitlesWidget->OnCurrentLineEnd();
-			}
-
-			ManageDialogueIndexDelegate();
-			CurrentDialogueLineIndex++;
-
-			//if there aren't other timestamps
-			if (CurrentDialogueLineIndex >= CurrentDialogue->TimeStamps.Num())
-			{
-				ManageDialogueEnd(); //check if ended all dialogues or just current
-				return;
-			}
-
-
-			if (bShouldAdjustAudioTiming)
-			{
-				bShouldAdjustAudioTiming = false;
-				DialogueLineElapsedTime = CurrentDialogue->TimeStamps[CurrentDialogueLineIndex-1].TimeStamp; // -1 because the time elapsed is the duration time of the previous dialogue line
-				
-				if (InGameManager->AudioComponent->Sound != nullptr)
-				{
-					InGameManager->AudioComponent->Play(DialogueLineElapsedTime);
-				}
-			}
-
-			SendDialogueToWidget();
-			
+			InGameManager->SubtitlesWidget->OnCurrentLineEnd();
 		}
+
+		CurrentDialogueLineIndex++;
+		ManageDialogueIndexDelegate();
+
+		//if there aren't other timestamps
+		if (CurrentDialogueLineIndex >= CurrentDialogue->TimeStamps.Num())
+		{
+			ManageDialogueEnd(); //check if ended all dialogues or just current
+			return;
+		}
+
+
+		if (bShouldAdjustAudioTiming)
+		{
+			bShouldAdjustAudioTiming = false;
+			DialogueLineElapsedTime = CurrentDialogue->TimeStamps[CurrentDialogueLineIndex-1].TimeStamp; // -1 because the time elapsed is the duration time of the previous dialogue line
+				
+			if (InGameManager->AudioComponent->Sound != nullptr)
+			{
+				InGameManager->AudioComponent->Play(DialogueLineElapsedTime);
+			}
+		}
+
+		SendDialogueToWidget();
+			
 	}
 
 }
@@ -412,6 +412,7 @@ void USNS_DialogueWorldSubsystem::AddOnAllCurrentDialogueEnd(const bool bRepeata
 
 void USNS_DialogueWorldSubsystem::ClearTMap()
 {
+	//parallel for
 	for (TPair<FName, FDialogueEventsLambdas>& Pair : PerDialogueLambdas)
 	{
 		for (size_t i = 0; i < Pair.Value.OnEnd.Num(); i++)
@@ -422,6 +423,11 @@ void USNS_DialogueWorldSubsystem::ClearTMap()
 		for (size_t i = 0; i < Pair.Value.OnStart.Num(); i++)
 		{
 			Pair.Value.OnEnd[i].DelegateHandle.Reset();
+		}
+
+		for (size_t i = 0; i < Pair.Value.OnIndex.Num(); i++)
+		{
+			Pair.Value.OnIndex[i].DelegateHandle.Reset();
 		}
 	}
 
@@ -463,4 +469,16 @@ void USNS_DialogueWorldSubsystem::CallDialogueDelegate(FOnDialogueDelegate& InDi
 			}
 		}
 	}
+}
+
+void USNS_DialogueWorldSubsystem::PauseCurrentDialogue()
+{
+	bIsTickEnabled = false;
+	InGameManager->AudioComponent->SetPaused(true);
+}
+
+void USNS_DialogueWorldSubsystem::ResumeCurrentDialogue()
+{
+	bIsTickEnabled = true;
+	InGameManager->AudioComponent->SetPaused(false);
 }

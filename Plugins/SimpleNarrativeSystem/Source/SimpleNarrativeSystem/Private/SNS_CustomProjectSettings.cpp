@@ -5,6 +5,7 @@
 
 USNS_CustomProjectSettings::USNS_CustomProjectSettings(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 , DialogueWidgetBlueprint(nullptr)
+, bShouldWarningOnNullOrNoneDialogueRowName(true)
 , PluginInfo("Ximer - Marco Baldini - 2024")
 {
 	//Start with the default widget already put inside the Project Settings
