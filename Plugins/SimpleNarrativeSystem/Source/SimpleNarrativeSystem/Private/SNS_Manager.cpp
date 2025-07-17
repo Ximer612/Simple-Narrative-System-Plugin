@@ -29,6 +29,18 @@ void ASNS_Manager::BeginPlay()
 	FSoftClassPath MyWidgetClassRef(GET_SETTINGS->DialogueWidgetBlueprint);
 	TSubclassOf<USNS_Widget> SubtitlesWidgetClass = MyWidgetClassRef.TryLoadClass<USNS_Widget>();
 
+	const TSoftObjectPtr<USoundClass>& DialoguesSoundClass = GET_SETTINGS->DialoguesSoundClass;
+
+	//TObjectPtr<USoundClass> MySoundClassRef(GET_SETTINGS->DialoguesSoundClass);
+	
+	if (GEngine && DialoguesSoundClass.IsNull())
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Is null!"));
+
+	if (!DialoguesSoundClass.IsNull())
+	{
+		AudioComponent->SoundClassOverride = DialoguesSoundClass.LoadSynchronous();
+	}
+
 	if (MyWidgetClassRef.IsNull() || SubtitlesWidgetClass == nullptr)
 	{
 		FMessageLog("PIE").Error(FText::FromString(TEXT("Can't find a Subtitle Widget, please set it inside 'Project Settings/Plugins/Simple Narrative System/Subtitles Widget'.")));
