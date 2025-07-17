@@ -31,11 +31,6 @@ void ASNS_Manager::BeginPlay()
 
 	const TSoftObjectPtr<USoundClass>& DialoguesSoundClass = GET_SETTINGS->DialoguesSoundClass;
 
-	//TObjectPtr<USoundClass> MySoundClassRef(GET_SETTINGS->DialoguesSoundClass);
-	
-	if (GEngine && DialoguesSoundClass.IsNull())
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Is null!"));
-
 	if (!DialoguesSoundClass.IsNull())
 	{
 		AudioComponent->SoundClassOverride = DialoguesSoundClass.LoadSynchronous();
