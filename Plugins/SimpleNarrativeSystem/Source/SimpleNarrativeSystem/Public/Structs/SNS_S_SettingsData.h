@@ -21,10 +21,9 @@ struct SIMPLENARRATIVESYSTEM_API FSNS_S_SettingsData
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleNarrativeSystem")
 	bool bSpeakerNameEnabled = true;
 
-	// not working with rich text
-	///* Text size */
-	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	//float SubtitlesSize;
+	/* Text size */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "SimpleNarrativeSystem")
+	float SubtitlesSize = 1.f;
 
 	/* Color of widget background with alpha */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SimpleNarrativeSystem")

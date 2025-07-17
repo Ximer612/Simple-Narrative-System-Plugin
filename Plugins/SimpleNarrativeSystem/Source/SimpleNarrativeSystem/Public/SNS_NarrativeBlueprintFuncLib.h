@@ -37,6 +37,4 @@ public:
 	static void PauseCurrentDialogue(UObject* WorldContextObject);
 	UFUNCTION(BlueprintCallable, Category = "Simple Narrative System", meta = (Keywords = "SNS", WorldContext = "WorldContextObject"))
 	static void ResumeCurrentDialogue(UObject* WorldContextObject);
-
-
 };
