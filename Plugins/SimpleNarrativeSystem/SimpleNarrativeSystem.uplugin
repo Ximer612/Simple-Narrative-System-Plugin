@@ -1,9 +1,9 @@
 {
 	"FileVersion": 3,
-	"Version": 2,
-	"VersionName": "2.0",
+	"Version": 3,
+	"VersionName": "3.0",
 	"FriendlyName": "SimpleNarrativeSystem",
-	"Description": "Simple Narrative System with events, data tables and custom rich text tags made by Ximer",
+	"Description": "Simple Narrative System with events, data tables, subtitles style changing and custom rich text tags made by Ximer",
 	"Category": "Other",
 	"CreatedBy": "Ximer - Marco Baldini",
 	"CreatedByURL": "https://marcobaldini.pages.dev/",

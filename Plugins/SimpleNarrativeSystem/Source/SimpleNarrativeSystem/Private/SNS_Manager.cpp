@@ -44,7 +44,7 @@ void ASNS_Manager::BeginPlay()
 	}
 
 	SubtitlesWidget = Cast<USNS_Widget>(CreateWidget(GetWorld()->GetFirstPlayerController(), SubtitlesWidgetClass));
-	SubtitlesWidget->AddToViewport(612);
+	SubtitlesWidget->AddToViewport(GET_SETTINGS->WidgetZOrder);
 
 }
 
